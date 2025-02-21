@@ -1,22 +1,25 @@
 // app/_layout.tsx
 import "react-native-get-random-values";
-import { Tabs, useRouter } from "expo-router"; // Import for navigation
+import { Agent } from "@credo-ts/core";
+import AgentProvider from "@credo-ts/react-hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
-import { initializeAgent } from "@/agent/Agent";
-import { TouchableOpacity, StyleSheet, View } from "react-native";
-import { Auth0Config } from "@/constants/Auth0Config";
-import { Auth0Provider } from "react-native-auth0";
-import { AgentProvider } from "@credo-ts/react-hooks";
+import { Tabs, useRouter } from "expo-router"; // Import for navigation
 import { useEffect, useState } from "react";
+import { TouchableOpacity, StyleSheet, View } from "react-native";
+import { Auth0Provider } from "react-native-auth0";
+
+import { initializeAgent } from "@/agent/Agent";
+import LoadingComponent from "@/component/LoadingComponent";
+import { Auth0Config } from "@/constants/Auth0Config";
+import { Colors } from "@/constants/Colors";
 
 export default function TabLayout() {
   const router = useRouter();
-  const [agent, setAgent] = useState();
+  const [agent, setAgent] = useState<Agent>();
 
   useEffect(() => {
     const setupAgent = async () => {
-      const agent = await initializeAgent("test");
+      const agent: Agent = await initializeAgent("test");
       setAgent(agent);
     };
 
@@ -84,7 +87,11 @@ export default function TabLayout() {
               href: null,
               headerTitle: "Add digital document",
               headerLeft: () => (
-                <TouchableOpacity onPress={() => router.back()}>
+                <TouchableOpacity
+                  onPress={() => {
+                    router.back();
+                  }}
+                >
                   <MaterialCommunityIcons
                     name="arrow-left"
                     size={30}
@@ -102,7 +109,11 @@ export default function TabLayout() {
               href: null,
               headerTitle: "Prescriptions",
               headerLeft: () => (
-                <TouchableOpacity onPress={() => router.back()}>
+                <TouchableOpacity
+                  onPress={() => {
+                    router.back();
+                  }}
+                >
                   <MaterialCommunityIcons
                     name="arrow-left"
                     size={30}
