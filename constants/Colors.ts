@@ -9,5 +9,5 @@ export const Colors = {
   white: "#ffffff",
   black: "#000000",
   green: "#219653",
-  red: "#a31f0e"
+  red: "#a31f0e",
 };
