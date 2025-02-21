@@ -1,21 +1,24 @@
-import { Agent, DidsModule } from "@credo-ts/core";
-import { agentDependencies } from "@credo-ts/react-native";
 import { AskarModule } from "@credo-ts/askar";
-import { ariesAskar } from "@hyperledger/aries-askar-react-native";
-
+import { Agent, DidsModule, ConsoleLogger, LogLevel } from "@credo-ts/core";
 import {
   IndyVdrModule,
   IndyVdrIndyDidRegistrar,
   IndyVdrIndyDidResolver,
 } from "@credo-ts/indy-vdr";
+import { agentDependencies } from "@credo-ts/react-native";
+import { ariesAskar } from "@hyperledger/aries-askar-react-native";
 import { indyVdr } from "@hyperledger/indy-vdr-react-native";
+
 import { GenesisTransactions } from "@/constants/GenesisTransactions";
 
 export async function initializeAgent(userId: string) {
   const agent = new Agent({
-    walletConfig: {
-      id: userId,
-      key: userId,
+    config: {
+      label: userId + "-wallet",
+      walletConfig: {
+        id: userId,
+        key: userId,
+      },
     },
     dependencies: agentDependencies,
     modules: {
