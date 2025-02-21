@@ -1,104 +1,122 @@
 // app/_layout.tsx
-import { Tabs, useRouter } from "expo-router";
+import 'react-native-get-random-values'
+import { Tabs, useRouter } from "expo-router";  // Import for navigation
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
+import { initializeAgent } from "@/agent/Agent";
 import { TouchableOpacity, StyleSheet, View } from "react-native";
-import {Auth0Config} from "@/constants/Auth0Config"; // Import for navigation
+import { Auth0Config } from "@/constants/Auth0Config";
 import { Auth0Provider } from "react-native-auth0";
+import { AgentProvider } from "@credo-ts/react-hooks"
+import { useEffect, useState } from "react";
+
 
 export default function TabLayout() {
     const router = useRouter();
+    const [agent, setAgent] = useState();
+
+    useEffect(() => {
+        const setupAgent = async () => {
+            const agent = await initializeAgent("test");
+            setAgent(agent)
+        }
+
+        setupAgent()
+            .catch(console.error);
+    }, [])
 
     return (
         <Auth0Provider domain={Auth0Config.domain} clientId={Auth0Config.clientId}>
-            <Tabs
-                screenOptions={{
-                    headerShown: true,
-                    headerStyle: {
-                        backgroundColor: Colors.bar,
-                        height: 70,
-                    },
-                    headerTintColor: Colors.lightpink,
-                    headerTitleAlign: "center",
-                    tabBarStyle: {
-                        backgroundColor: Colors.bar,
-                        height: 70,
-                    },
-                    tabBarShowLabel: false,
-                }}
-            >
-                <Tabs.Screen
-                    name="login"
-                    options={{
-                        href: null,
-                        headerTitle: "",
+            <AgentProvider agent={agent}>
+                <Tabs
+                    screenOptions={{
+                        headerShown: true,
+                        headerStyle: {
+                            backgroundColor: Colors.bar,
+                            height: 70,
+                        },
+                        headerTintColor: Colors.lightpink,
+                        headerTitleAlign: "center",
+                        tabBarStyle: {
+                            backgroundColor: Colors.bar,
+                            height: 70,
+                        },
+                        tabBarShowLabel: false,
                     }}
-                />
+                >
+                    <Tabs.Screen
+                        name="login"
+                        options={{
+                            href: null,
+                            headerTitle: "",
+                        }}
+                    />
 
-                <Tabs.Screen
-                    name="register"
-                    options={{
-                        href: null,
-                        headerTitle: "",
-                    }}
-                />
+                    <Tabs.Screen
+                        name="register"
+                        options={{
+                            href: null,
+                            headerTitle: "",
+                        }}
+                    />
 
-                <Tabs.Screen
-                    name="index"
-                    options={{
-                        headerTitle: "",
-                        tabBarButton: (props) => (
-                            <View style={styles.tabBarContainer}>
-                                <TouchableOpacity>
-                                    <View style={styles.circle}>
-                                        <MaterialCommunityIcons
-                                            name="home"
-                                            size={35}
-                                            color={Colors.bar}
-                                        />
-                                    </View>
+                    <Tabs.Screen
+                        name="index"
+                        options={{
+                            headerTitle: "",
+                            tabBarButton: (props) => (
+                                <View style={styles.tabBarContainer}>
+                                    <TouchableOpacity>
+                                        <View style={styles.circle}>
+                                            <MaterialCommunityIcons
+                                                name="home"
+                                                size={35}
+                                                color={Colors.bar}
+                                            />
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            ),
+                        }}
+                    />
+
+                    <Tabs.Screen
+                        name="addPrescriptions"
+                        options={{
+                            href: null,
+                            headerTitle: "Add digital document",
+                            headerLeft: () => (
+                                <TouchableOpacity onPress={() => router.back()}>
+                                    <MaterialCommunityIcons
+                                        name="arrow-left"
+                                        size={30}
+                                        color={Colors.lightpink}
+                                        style={{ marginLeft: 15 }}
+                                    />
                                 </TouchableOpacity>
-                            </View>
-                        ),
-                    }}
-                />
+                            ),
+                        }}
+                    />
 
-                <Tabs.Screen
-                    name="addPrescriptions"
-                    options={{
-                        href: null,
-                        headerTitle: "Add digital document",
-                        headerLeft: () => (
-                            <TouchableOpacity onPress={() => router.back()}>
-                                <MaterialCommunityIcons
-                                    name="arrow-left"
-                                    size={30}
-                                    color={Colors.lightpink}
-                                    style={{ marginLeft: 15 }}
-                                />
-                            </TouchableOpacity>
-                        ),
-                    }}
-                />
-
-                <Tabs.Screen
-                    name="viewPrescriptions"
-                    options={{
-                        href: null,
-                        headerTitle: "Prescriptions",
-                        headerLeft: () => (
-                            <TouchableOpacity onPress={() => router.back()}>
-                                <MaterialCommunityIcons
-                                    name="arrow-left"
-                                    size={30}
-                                    color={Colors.lightpink}
-                                    style={{ marginLeft: 15 }}
-                                />
-                            </TouchableOpacity>
-                        ),
-                    }}
-                />
-            </Tabs>
+                    <Tabs.Screen
+                        name="viewPrescriptions"
+                        options={{
+                            href: null,
+                            headerTitle: "Prescriptions",
+                            headerLeft: () => (
+                                <TouchableOpacity onPress={() => router.back()}>
+                                    <MaterialCommunityIcons
+                                        name="arrow-left"
+                                        size={30}
+                                        color={Colors.lightpink}
+                                        style={{ marginLeft: 15 }}
+                                    />
+                                </TouchableOpacity>
+                            ),
+                        }}
+                    />
+                </Tabs>
+            </AgentProvider>
         </Auth0Provider>
     );
 }
