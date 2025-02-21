@@ -3,6 +3,8 @@ module.exports = {
   extends: [
     "expo",
     "prettier",
+    "universe/native",
+    "universe/shared/typescript-analysis",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
   ],
@@ -12,4 +14,12 @@ module.exports = {
     "prettier/prettier": "error",
   },
   ignorePatterns: ["/dist/*"],
+  overrides: [
+    {
+      files: ["*.ts", "*.tsx", "*.d.ts"],
+      parserOptions: {
+        project: "./tsconfig.json",
+      },
+    },
+  ],
 };
