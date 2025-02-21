@@ -19,6 +19,7 @@ export async function initializeAgent(userId: string) {
         id: userId,
         key: userId,
       },
+      logger: new ConsoleLogger(LogLevel.info),
     },
     dependencies: agentDependencies,
     modules: {
