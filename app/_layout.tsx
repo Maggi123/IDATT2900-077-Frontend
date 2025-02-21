@@ -26,6 +26,8 @@ export default function TabLayout() {
     setupAgent().catch(console.error);
   }, []);
 
+  if (!agent) return <LoadingComponent />;
+
   return (
     <Auth0Provider domain={Auth0Config.domain} clientId={Auth0Config.clientId}>
       <AgentProvider agent={agent}>
