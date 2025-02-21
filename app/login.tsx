@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { useAuth0 } from "react-native-auth0";
+
 import { Colors } from "@/constants/Colors"; // Make sure Colors are defined
 
 export default function Login() {

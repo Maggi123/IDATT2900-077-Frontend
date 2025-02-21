@@ -1,5 +1,6 @@
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+
 import { Colors } from "@/constants/Colors";
 
 export default function AddPrescriptions() {
@@ -11,7 +12,9 @@ export default function AddPrescriptions() {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress("Button 1")}
+        onPress={() => {
+          handleButtonPress("Button 1");
+        }}
       >
         <View style={styles.buttonContent}>
           <MaterialCommunityIcons
@@ -25,7 +28,9 @@ export default function AddPrescriptions() {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress("Button 2")}
+        onPress={() => {
+          handleButtonPress("Button 2");
+        }}
       >
         <View style={styles.buttonContent}>
           <MaterialCommunityIcons
@@ -39,7 +44,9 @@ export default function AddPrescriptions() {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress("Button 3")}
+        onPress={() => {
+          handleButtonPress("Button 3");
+        }}
       >
         <View style={styles.buttonContent}>
           <MaterialCommunityIcons

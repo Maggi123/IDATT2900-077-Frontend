@@ -1,4 +1,5 @@
 import { Text, View, StyleSheet } from "react-native";
+
 import { Colors } from "@/constants/Colors";
 
 export default function ViewPrescriptions() {

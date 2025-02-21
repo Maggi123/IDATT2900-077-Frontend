@@ -1,7 +1,8 @@
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
 import { useRouter } from "expo-router";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+
+import { Colors } from "@/constants/Colors";
 
 export default function Index() {
   const router = useRouter();
@@ -18,7 +19,9 @@ export default function Index() {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress("Button 1")}
+        onPress={() => {
+          handleButtonPress("Button 1");
+        }}
       >
         <View style={styles.buttonContent}>
           <MaterialCommunityIcons
@@ -31,7 +34,9 @@ export default function Index() {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress("Button 2")}
+        onPress={() => {
+          handleButtonPress("Button 2");
+        }}
       >
         <View style={styles.buttonContent}>
           <MaterialCommunityIcons

@@ -1,4 +1,5 @@
 import { Text, View, StyleSheet } from "react-native";
+
 import { Colors } from "@/constants/Colors"; // Make sure Colors are defined
 
 export default function Register() {
