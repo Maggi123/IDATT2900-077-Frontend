@@ -9,7 +9,7 @@ import { agentDependencies } from "@credo-ts/react-native";
 import { ariesAskar } from "@hyperledger/aries-askar-react-native";
 import { indyVdr } from "@hyperledger/indy-vdr-react-native";
 
-import { GenesisTransactions } from "@/constants/GenesisTransactions";
+import transactions from "@/assets/genesis.json";
 
 export async function initializeAgent(userId: string) {
   const agent = new Agent({
@@ -30,6 +30,7 @@ export async function initializeAgent(userId: string) {
             isProduction: false,
             indyNamespace: "localhost",
             genesisTransactions: GenesisTransactions,
+            genesisTransactions: transactions.genesisTransactions,
             connectOnStartup: true,
           },
         ],
