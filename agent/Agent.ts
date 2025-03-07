@@ -1,10 +1,6 @@
 import { AskarModule } from "@credo-ts/askar";
 import { Agent, DidsModule, ConsoleLogger, LogLevel } from "@credo-ts/core";
-import {
-  IndyVdrModule,
-  IndyVdrIndyDidRegistrar,
-  IndyVdrIndyDidResolver,
-} from "@credo-ts/indy-vdr";
+import { IndyVdrModule, IndyVdrIndyDidResolver } from "@credo-ts/indy-vdr";
 import { agentDependencies } from "@credo-ts/react-native";
 import { ariesAskar } from "@hyperledger/aries-askar-react-native";
 import { indyVdr } from "@hyperledger/indy-vdr-react-native";
@@ -14,12 +10,12 @@ import transactions from "@/assets/genesis.json";
 export async function initializeAgent(userId: string) {
   const agent = new Agent({
     config: {
-      label: userId + "-wallet",
+      label: userId + "wallet",
       walletConfig: {
         id: userId,
         key: userId,
       },
-      logger: new ConsoleLogger(LogLevel.info),
+      logger: new ConsoleLogger(LogLevel.test),
     },
     dependencies: agentDependencies,
     modules: {
@@ -28,8 +24,7 @@ export async function initializeAgent(userId: string) {
         networks: [
           {
             isProduction: false,
-            indyNamespace: "localhost",
-            genesisTransactions: GenesisTransactions,
+            indyNamespace: "local",
             genesisTransactions: transactions.genesisTransactions,
             connectOnStartup: true,
           },
@@ -39,7 +34,6 @@ export async function initializeAgent(userId: string) {
         ariesAskar,
       }),
       dids: new DidsModule({
-        registrars: [new IndyVdrIndyDidRegistrar()],
         resolvers: [new IndyVdrIndyDidResolver()],
       }),
     },
