@@ -1,18 +1,11 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 
-export default function Index() {
-  const router = useRouter();
-
+export default function AddPrescriptions() {
   const handleButtonPress = (button: string) => {
-    if (button === "Button 1") {
-      router.push("/addPrescriptions");
-    } else if (button === "Button 2") {
-      router.push("/viewPrescriptions");
-    }
+    console.log(`${button} button pressed`);
   };
 
   return (
@@ -25,13 +18,14 @@ export default function Index() {
       >
         <View style={styles.buttonContent}>
           <MaterialCommunityIcons
-            name="plus-circle-outline"
-            size={40}
-            color={Colors.lightpink}
+            name="qrcode-scan"
+            size={24}
+            color={Colors.lightpurple}
           />
-          <Text style={styles.buttonText}>Add prescriptions</Text>
+          <Text style={styles.buttonText}>Scan QR code</Text>
         </View>
       </TouchableOpacity>
+
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
@@ -40,11 +34,27 @@ export default function Index() {
       >
         <View style={styles.buttonContent}>
           <MaterialCommunityIcons
-            name="folder-outline"
-            size={40}
-            color={Colors.lightpink}
+            name="pencil-outline"
+            size={24}
+            color={Colors.lightpurple}
           />
-          <Text style={styles.buttonText}>View prescriptions</Text>
+          <Text style={styles.buttonText}>Input URL</Text>
+        </View>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          handleButtonPress("Button 3");
+        }}
+      >
+        <View style={styles.buttonContent}>
+          <MaterialCommunityIcons
+            name="upload-outline"
+            size={24}
+            color={Colors.lightpurple}
+          />
+          <Text style={styles.buttonText}>Upload document</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -61,22 +71,20 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "90%",
-    backgroundColor: Colors.button,
-    paddingVertical: 10,
-    borderRadius: 20,
+    backgroundColor: Colors.lightpink,
+    paddingVertical: 12,
+    borderRadius: 10,
     justifyContent: "center",
-    alignItems: "flex-start",
+    alignItems: "center",
   },
   buttonContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    padding: 10,
-    paddingHorizontal: 15,
     gap: 10,
   },
   buttonText: {
-    color: Colors.lightpink,
-    fontSize: 30,
+    color: Colors.lightpurple,
+    fontSize: 20,
   },
 });
