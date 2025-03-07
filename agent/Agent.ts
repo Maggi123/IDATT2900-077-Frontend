@@ -6,8 +6,16 @@ import { ariesAskar } from "@hyperledger/aries-askar-react-native";
 import { indyVdr } from "@hyperledger/indy-vdr-react-native";
 
 import transactions from "@/assets/genesis.json";
+import { getGenesisTransactionsFromRemote } from "@/util/DidUtil";
+import { getIndyIp } from "@/util/NetworkUtil";
 
 export async function initializeAgent(userId: string) {
+  const genesisTransactionsPath = getIndyIp() + ":9000/genesis";
+  const remoteGenesisTx = await getGenesisTransactionsFromRemote(
+    genesisTransactionsPath,
+  );
+  const genesisTx = remoteGenesisTx ?? transactions.genesisTransactions;
+
   const agent = new Agent({
     config: {
       label: userId + "wallet",
@@ -25,7 +33,7 @@ export async function initializeAgent(userId: string) {
           {
             isProduction: false,
             indyNamespace: "local",
-            genesisTransactions: transactions.genesisTransactions,
+            genesisTransactions: genesisTx,
             connectOnStartup: true,
           },
         ],
