@@ -1,20 +1,35 @@
 import { useRouter } from "expo-router"; // Make sure Colors are defined
+import * as SecureStore from "expo-secure-store";
 import { Text, View, TouchableOpacity } from "react-native";
 import { useAuth0 } from "react-native-auth0";
 
 import { defaultStyles } from "@/stylesheets/defaultStyles";
+import { secureStoreKeyFromUserSub } from "@/util/KeyUtil";
 
 export default function Login() {
-  const { authorize } = useAuth0();
+  const { authorize, user, error, clearSession } = useAuth0();
   const router = useRouter();
 
   const onLoginPress = async () => {
-    try {
-      await authorize();
+    await authorize();
+    if (user) {
+      if (user.sub) {
+        const key = await SecureStore.getItemAsync(
+          secureStoreKeyFromUserSub(user.sub),
+        );
+        if (!key) {
+          await clearSession();
+          throw new Error("Authenticated account has not been registered.");
+        }
+      } else
+        throw new Error(
+          "User did not authenticate with OpenID account during login.",
+        );
       router.push("/home");
-    } catch (error) {
-      console.error(error);
-    }
+    } else
+      throw new Error(
+        `User did not authenticate during login. Error: ${error}`,
+      );
   };
 
   return (
@@ -22,7 +37,7 @@ export default function Login() {
       <Text style={defaultStyles.title}>Login</Text>
       <TouchableOpacity
         style={defaultStyles.button}
-        onPress={() => onLoginPress()}
+        onPress={() => onLoginPress().catch(console.error)}
       >
         <View style={defaultStyles.buttonContent}>
           <Text style={defaultStyles.buttonText}>

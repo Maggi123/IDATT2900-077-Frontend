@@ -3,23 +3,31 @@ import { Agent } from "@credo-ts/core";
 import AgentProvider from "@credo-ts/react-hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router"; // Import for navigation
+import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { TouchableOpacity, StyleSheet, View } from "react-native";
+import { useAuth0 } from "react-native-auth0";
 
 import { initializeAgent } from "@/agent/Agent";
 import LoadingComponent from "@/component/LoadingComponent";
 import { Colors } from "@/constants/Colors";
 import { getDidForAgent } from "@/util/DidUtil";
+import { secureStoreKeyFromUserSub } from "@/util/KeyUtil";
 
 export default function TabLayout() {
   const [agent, setAgent] = useState<Agent>();
+  const { user } = useAuth0();
 
   useEffect(() => {
     const setupAgent = async () => {
-      const agent: Agent = await initializeAgent("test");
+      const key = await SecureStore.getItemAsync(
+        secureStoreKeyFromUserSub(user!.sub!),
+      );
+      const agent: Agent = await initializeAgent(user!.sub!, key!);
       setAgent(agent);
 
       await getDidForAgent(agent);
+      console.info("Agent has DID.");
     };
 
     setupAgent().catch(console.error);
