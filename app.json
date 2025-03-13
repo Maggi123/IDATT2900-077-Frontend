@@ -48,7 +48,8 @@
         {
           "domain": "dev-6njnch7ve6ir7lb4.eu.auth0.com"
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
