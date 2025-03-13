@@ -1,8 +1,8 @@
+import { useRouter } from "expo-router"; // Make sure Colors are defined
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { useAuth0 } from "react-native-auth0";
 
 import { Colors } from "@/constants/Colors";
-import { useRouter } from "expo-router"; // Make sure Colors are defined
 
 export default function Login() {
   const { authorize } = useAuth0();
