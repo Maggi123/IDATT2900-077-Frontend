@@ -13,7 +13,7 @@ module.exports = {
   rules: {
     "prettier/prettier": "error",
   },
-  ignorePatterns: ["/dist/*"],
+  ignorePatterns: ["/dist/*", "expo-env.d.ts"],
   overrides: [
     {
       files: ["*.ts", "*.tsx", "*.d.ts"],
