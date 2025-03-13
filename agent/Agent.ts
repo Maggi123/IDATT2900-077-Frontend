@@ -9,7 +9,7 @@ import transactions from "@/assets/genesis.json";
 import { getGenesisTransactionsFromRemote } from "@/util/DidUtil";
 import { getIndyIp } from "@/util/NetworkUtil";
 
-export async function initializeAgent(userId: string) {
+export async function initializeAgent(userId: string, stringKey: string) {
   const genesisTransactionsPath = getIndyIp() + ":9000/genesis";
   const remoteGenesisTx = await getGenesisTransactionsFromRemote(
     genesisTransactionsPath,
@@ -21,7 +21,7 @@ export async function initializeAgent(userId: string) {
       label: userId + "wallet",
       walletConfig: {
         id: userId,
-        key: userId,
+        key: stringKey,
       },
       logger: new ConsoleLogger(LogLevel.test),
     },
