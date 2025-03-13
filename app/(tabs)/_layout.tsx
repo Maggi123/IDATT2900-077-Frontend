@@ -11,6 +11,7 @@ import { initializeAgent } from "@/agent/Agent";
 import LoadingComponent from "@/component/LoadingComponent";
 import { Auth0Config } from "@/constants/Auth0Config";
 import { Colors } from "@/constants/Colors";
+import { getDidForAgent } from "@/util/DidUtil";
 
 export default function TabLayout() {
   const [agent, setAgent] = useState<Agent>();
@@ -19,6 +20,8 @@ export default function TabLayout() {
     const setupAgent = async () => {
       const agent: Agent = await initializeAgent("test");
       setAgent(agent);
+
+      await getDidForAgent(agent);
     };
 
     setupAgent().catch(console.error);
