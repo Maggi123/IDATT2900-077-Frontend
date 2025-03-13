@@ -1,37 +1,50 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
-import { useAuth0 } from "react-native-auth0";
 
 import { Colors } from "@/constants/Colors";
-import { useRouter } from "expo-router"; // Make sure Colors are defined
 
-export default function Login() {
-  const { authorize } = useAuth0();
+export default function Home() {
   const router = useRouter();
 
-  const onLoginPress = async () => {
-    try {
-      await authorize();
-    } catch (error) {
-      console.error(error);
+  const handleButtonPress = (button: string) => {
+    if (button === "Button 1") {
+      router.push("/(addPrescriptions)");
+    } else if (button === "Button 2") {
+      router.push("/(viewPrescriptions)");
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <TouchableOpacity style={styles.button} onPress={() => onLoginPress()}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          handleButtonPress("Button 1");
+        }}
+      >
         <View style={styles.buttonContent}>
-          <Text style={styles.buttonText}>Login with BankID</Text>
+          <MaterialCommunityIcons
+            name="plus-circle-outline"
+            size={40}
+            color={Colors.lightpink}
+          />
+          <Text style={styles.buttonText}>Add prescriptions</Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          router.push("/home");
+          handleButtonPress("Button 2");
         }}
       >
         <View style={styles.buttonContent}>
-          <Text style={styles.buttonText}>Go to Home</Text>
+          <MaterialCommunityIcons
+            name="folder-outline"
+            size={40}
+            color={Colors.lightpink}
+          />
+          <Text style={styles.buttonText}>View prescriptions</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -41,14 +54,10 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.background,
-  },
-  title: {
-    fontSize: 40,
-    paddingTop: 30,
-    color: Colors.text,
-    fontWeight: "bold",
+    gap: 20,
   },
   button: {
     width: "90%",

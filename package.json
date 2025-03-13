@@ -26,8 +26,6 @@
     "@hyperledger/anoncreds-react-native": "^0.2.4",
     "@hyperledger/aries-askar-react-native": "^0.2.3",
     "@hyperledger/indy-vdr-react-native": "^0.2.2",
-    "@react-navigation/bottom-tabs": "^7.2.0",
-    "@react-navigation/native": "^7.0.14",
     "@types/react-native-get-random-values": "^1.8.2",
     "@unimodules/core": "./noop",
     "@unimodules/react-native-adapter": "./noop",

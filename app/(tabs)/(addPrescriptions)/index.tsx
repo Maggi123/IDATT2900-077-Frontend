@@ -1,11 +1,20 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 
 export default function AddPrescriptions() {
+  const router = useRouter();
+
   const handleButtonPress = (button: string) => {
-    console.log(`${button} button pressed`);
+    if (button === "Button 1") {
+      router.push("/qrcode");
+    } else if (button === "Button 2") {
+      router.push("/url");
+    } else if (button === "Button 3") {
+      router.push("/upload");
+    }
   };
 
   return (
