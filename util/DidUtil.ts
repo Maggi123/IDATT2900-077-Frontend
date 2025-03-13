@@ -14,6 +14,9 @@ export async function getDidForAgent(agent: Agent) {
     didMetadata = await didResponse.json();
   }
 
+  if (didMetadata.didState.state === "failed")
+    throw new Error("Internal server agent unable to generate DID.");
+
   await agent.wallet.createKey({
     keyType: KeyType.Ed25519,
     seed: JsonEncoder.toBuffer(didMetadata.didState.secret.seed),
