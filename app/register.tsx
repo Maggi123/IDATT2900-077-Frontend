@@ -1,6 +1,7 @@
 import * as Crypto from "expo-crypto";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import { useEffect } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import { useAuth0 } from "react-native-auth0";
 
@@ -13,24 +14,32 @@ export default function Register() {
 
   const onRegisterPress = async () => {
     await authorize();
-    if (user) {
-      await SecureStore.setItemAsync("registered", "1");
-      const key = await Crypto.getRandomBytesAsync(1024);
-      if (user.sub)
-        await SecureStore.setItemAsync(
-          secureStoreKeyFromUserSub(user.sub),
-          key.toString(),
-        );
-      else
-        throw new Error(
-          "User did not authenticate with OpenID account during registering.",
-        );
-      router.push("/home");
-    } else
-      throw new Error(
-        `User did not authenticate during registering. Error: ${error}`,
-      );
   };
+
+  useEffect(() => {
+    const routeOnRegister = async () => {
+      if (user) {
+        if (error)
+          throw new Error(
+            `User did not authenticate successfully during registering. Error: ${error}`,
+          );
+        await SecureStore.setItemAsync("registered", "1");
+        const key = await Crypto.getRandomBytesAsync(1024);
+        if (user.sub)
+          await SecureStore.setItemAsync(
+            secureStoreKeyFromUserSub(user.sub),
+            key.toString(),
+          );
+        else
+          throw new Error(
+            "User did not authenticate with OpenID account during registering.",
+          );
+        router.push("/home");
+      }
+    };
+
+    routeOnRegister().catch(console.error);
+  }, [user]);
 
   return (
     <View style={defaultStyles.container}>
