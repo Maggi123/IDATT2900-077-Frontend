@@ -1,9 +1,16 @@
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
+import { useState, useEffect } from "react";
 import { Colors } from "@/constants/Colors";
 
 export default function Index() {
+  const [registered, setRegistered] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setRegistered(!!SecureStore.getItem("registered"));
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -12,6 +19,7 @@ export default function Index() {
         onPress={() => {
           router.push("/login");
         }}
+        disabled={!registered}
       >
         <Text style={styles.buttonText1}>Login</Text>
       </TouchableOpacity>
@@ -20,6 +28,7 @@ export default function Index() {
         onPress={() => {
           router.push("/register");
         }}
+        disabled={registered}
       >
         <Text style={styles.buttonText2}>Register</Text>
       </TouchableOpacity>

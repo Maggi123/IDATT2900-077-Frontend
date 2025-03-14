@@ -1,73 +1,69 @@
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router"; // Make sure Colors are defined
+import * as SecureStore from "expo-secure-store";
+import { useEffect } from "react";
+import { Text, View, TouchableOpacity } from "react-native";
 import { useAuth0 } from "react-native-auth0";
 
-import { Colors } from "@/constants/Colors";
-import { useRouter } from "expo-router"; // Make sure Colors are defined
+import { defaultStyles } from "@/stylesheets/defaultStyles";
+import { secureStoreKeyFromUserSub } from "@/util/KeyUtil";
 
 export default function Login() {
-  const { authorize } = useAuth0();
+  const { authorize, user, error, clearSession } = useAuth0();
   const router = useRouter();
 
   const onLoginPress = async () => {
-    try {
-      await authorize();
-    } catch (error) {
-      console.error(error);
-    }
+    await authorize();
   };
 
+  useEffect(() => {
+    const routeOnLogin = async () => {
+      if (user) {
+        if (error)
+          throw new Error(
+            `User did not authenticate successfully during login. Error: ${error}`,
+          );
+        if (user.sub) {
+          const key = await SecureStore.getItemAsync(
+            secureStoreKeyFromUserSub(user.sub),
+          );
+          if (!key) {
+            await clearSession();
+            throw new Error("Authenticated account has not been registered.");
+          }
+        } else
+          throw new Error(
+            "User did not authenticate with OpenID account during login.",
+          );
+        router.push("/home");
+      }
+    };
+
+    routeOnLogin().catch(console.error);
+  }, [user]);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <TouchableOpacity style={styles.button} onPress={() => onLoginPress()}>
-        <View style={styles.buttonContent}>
-          <Text style={styles.buttonText}>Login with BankID</Text>
+    <View style={defaultStyles.container}>
+      <Text style={defaultStyles.title}>Login</Text>
+      <TouchableOpacity
+        style={defaultStyles.button}
+        onPress={() => onLoginPress().catch(console.error)}
+      >
+        <View style={defaultStyles.buttonContent}>
+          <Text style={defaultStyles.buttonText}>
+            Login with External Account
+          </Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity
-        style={styles.button}
+        style={defaultStyles.button}
         onPress={() => {
           router.push("/home");
         }}
       >
-        <View style={styles.buttonContent}>
-          <Text style={styles.buttonText}>Go to Home</Text>
+        <View style={defaultStyles.buttonContent}>
+          <Text style={defaultStyles.buttonText}>Go to Home</Text>
         </View>
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: Colors.background,
-  },
-  title: {
-    fontSize: 40,
-    paddingTop: 30,
-    color: Colors.text,
-    fontWeight: "bold",
-  },
-  button: {
-    width: "90%",
-    backgroundColor: Colors.button,
-    paddingVertical: 10,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "flex-start",
-  },
-  buttonContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 10,
-    paddingHorizontal: 15,
-    gap: 10,
-  },
-  buttonText: {
-    color: Colors.lightpink,
-    fontSize: 30,
-  },
-});
