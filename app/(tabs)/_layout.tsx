@@ -82,6 +82,22 @@ export default function TabLayout() {
             headerShown: false,
           }}
         />
+        <Tabs.Screen
+          name="logout"
+          options={{
+            tabBarButton: (props) => (
+              <TouchableOpacity {...props} style={styles.tabBarContainer}>
+                <View style={styles.circle}>
+                  <MaterialCommunityIcons
+                    name="logout"
+                    size={35}
+                    color={Colors.bar}
+                  />
+                </View>
+              </TouchableOpacity>
+            ),
+          }}
+        />
       </Tabs>
     </AgentProvider>
   );
