@@ -9,9 +9,9 @@ export default function Home() {
 
   const handleButtonPress = (button: string) => {
     if (button === "Button 1") {
-      router.push("/(addPrescriptions)");
+      router.push("/(tabs)/(addPrescriptions)");
     } else if (button === "Button 2") {
-      router.push("/(viewPrescriptions)");
+      router.push("/(tabs)/(viewPrescriptions)");
     }
   };
 
