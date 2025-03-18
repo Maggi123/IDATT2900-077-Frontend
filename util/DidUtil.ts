@@ -1,29 +1,53 @@
-import { Agent, KeyType, JsonEncoder } from "@credo-ts/core";
+import { Agent, KeyType, Key, TypedArrayEncoder } from "@credo-ts/core";
 
 import { getBackendIp, getIndyIp } from "@/util/NetworkUtil";
 
 export async function getDidForAgent(agent: Agent) {
-  if ((await agent.dids.getCreatedDids()).length > 0) return;
+  const dids = await agent.dids.getCreatedDids({
+    method: "indy",
+  });
 
-  const didResponse = await fetch("http://" + getBackendIp() + ":3000/did");
-  let didMetadata;
+  // Assume that any imported Indy DID has been imported correctly
+  if (dids.length > 0) return;
 
-  if (!didResponse.ok) {
-    throw new Error("Unable to generate DID for wallet.");
+  const backendResponse = await fetch("http://" + getBackendIp() + ":3000/did");
+  let responseJson;
+
+  if (!backendResponse.ok) {
+    throw new Error(
+      `Unable to generate DID for wallet. Reason: ${await backendResponse.text()}`,
+    );
   } else {
-    didMetadata = await didResponse.json();
+    responseJson = await backendResponse.json();
   }
-
-  if (didMetadata.didState.state === "failed")
-    throw new Error("Internal server agent unable to generate DID.");
 
   await agent.wallet.createKey({
     keyType: KeyType.Ed25519,
-    seed: JsonEncoder.toBuffer(didMetadata.didState.secret.seed),
+    seed: TypedArrayEncoder.fromString(responseJson.seed),
   });
 
+  // Try to sign some random data with the DIDs private key
+  // This is to check that we have been able to store the DIDs private key
+  const didDocument = await agent.dids.resolve(responseJson.didUrl);
+  const pubKey =
+    didDocument.didDocument?.dereferenceVerificationMethod(
+      "verkey",
+    )?.publicKeyBase58;
+  const keyObject = Key.fromPublicKeyBase58(pubKey!, KeyType.Ed25519);
+
+  try {
+    await agent.context.wallet.sign({
+      data: TypedArrayEncoder.fromString("test"),
+      key: keyObject,
+    });
+  } catch (e) {
+    // If an error is caught, the DID not be used for storing VCs.
+    // TODO: Propagate error instead of handling it here
+    console.error("Unable to sign with DID verkey.", e);
+  }
+
   await agent.dids.import({
-    did: didMetadata.didState.did,
+    did: responseJson.didUrl,
   });
 }
 
