@@ -1,6 +1,7 @@
 import { AskarModule } from "@credo-ts/askar";
 import { Agent, DidsModule, ConsoleLogger, LogLevel } from "@credo-ts/core";
 import { IndyVdrModule, IndyVdrIndyDidResolver } from "@credo-ts/indy-vdr";
+import { OpenId4VcHolderModule } from "@credo-ts/openid4vc";
 import { agentDependencies } from "@credo-ts/react-native";
 import { ariesAskar } from "@hyperledger/aries-askar-react-native";
 import { indyVdr } from "@hyperledger/indy-vdr-react-native";
@@ -44,6 +45,7 @@ export async function initializeAgent(userId: string, stringKey: string) {
       dids: new DidsModule({
         resolvers: [new IndyVdrIndyDidResolver()],
       }),
+      openId4VcHolderModule: new OpenId4VcHolderModule(),
     },
   });
 
