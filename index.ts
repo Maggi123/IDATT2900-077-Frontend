@@ -1,4 +1,3 @@
 import "fast-text-encoding";
-import { shim } from "react-native-quick-base64";
-shim();
+import "@/polyfill/base64polyfill";
 import "expo-router/entry";
