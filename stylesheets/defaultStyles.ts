@@ -34,4 +34,27 @@ export const defaultStyles = StyleSheet.create({
     color: Colors.lightpink,
     fontSize: 30,
   },
+  overlay: {
+    margin: 20,
+    padding: 12,
+    width: "90%",
+    backgroundColor: Colors.white,
+    borderRadius: 8,
+  },
+  overlayText: {
+    fontSize: 16,
+    color: Colors.text,
+  },
+  uploadButton: {
+    paddingVertical: 12,
+    backgroundColor: Colors.button,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "30%",
+  },
+  uploadButtonText: {
+    color: Colors.lightpink,
+    fontWeight: "bold",
+  },
 });
