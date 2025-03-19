@@ -9,11 +9,11 @@ export default function AddPrescriptions() {
 
   const handleButtonPress = (button: string) => {
     if (button === "Button 1") {
-      router.push("/qrcode");
+      router.push("/QRCodeScreen");
     } else if (button === "Button 2") {
-      router.push("/url");
+      router.push("/URLScreen");
     } else if (button === "Button 3") {
-      router.push("/upload");
+      router.push("/UploadScreen");
     }
   };
 

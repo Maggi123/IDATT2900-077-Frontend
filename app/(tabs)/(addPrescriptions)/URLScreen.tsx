@@ -4,11 +4,11 @@ import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/defaultStyles";
 
-export default function URL() {
+export default function URLScreen() {
   const [url, setUrl] = useState("");
 
   const handleUpload = () => {
-    console.log("Uploading URL:", url);
+    console.log("Uploading URLScreen:", url);
   };
 
   return (

@@ -8,7 +8,7 @@ import { useAuth0 } from "react-native-auth0";
 import { defaultStyles } from "@/stylesheets/defaultStyles";
 import { secureStoreKeyFromUserSub } from "@/util/KeyUtil";
 
-export default function Register() {
+export default function RegisterScreen() {
   const router = useRouter();
   const { authorize, user, error } = useAuth0();
 
@@ -34,7 +34,7 @@ export default function Register() {
           throw new Error(
             "User did not authenticate with OpenID account during registering.",
           );
-        router.push("/home");
+        router.push("/HomeScreen");
       }
     };
 

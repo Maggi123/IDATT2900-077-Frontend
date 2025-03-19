@@ -5,7 +5,7 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/defaultStyles";
 
-export default function QRCode() {
+export default function QRCodeScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scannedData, setScannedData] = useState<string | null>(null);
 

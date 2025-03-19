@@ -7,7 +7,7 @@ import { useAuth0 } from "react-native-auth0";
 import { defaultStyles } from "@/stylesheets/defaultStyles";
 import { secureStoreKeyFromUserSub } from "@/util/KeyUtil";
 
-export default function Login() {
+export default function LoginScreen() {
   const { authorize, user, error, clearSession } = useAuth0();
   const router = useRouter();
 
@@ -34,7 +34,7 @@ export default function Login() {
           throw new Error(
             "User did not authenticate with OpenID account during login.",
           );
-        router.push("/home");
+        router.push("/HomeScreen");
       }
     };
 
@@ -57,7 +57,7 @@ export default function Login() {
       <TouchableOpacity
         style={defaultStyles.button}
         onPress={() => {
-          router.push("/home");
+          router.push("/HomeScreen");
         }}
       >
         <View style={defaultStyles.buttonContent}>

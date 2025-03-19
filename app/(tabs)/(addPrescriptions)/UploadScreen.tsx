@@ -5,7 +5,7 @@ import * as DocumentPicker from "expo-document-picker";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/defaultStyles";
 
-export default function Upload() {
+export default function UploadScreen() {
   // Keeping the state as an array to allow adding documents, but limiting to one document
   const [selectedDocument, setSelectedDocument] = useState<DocumentPicker.DocumentPickerAsset[]>([]);
 

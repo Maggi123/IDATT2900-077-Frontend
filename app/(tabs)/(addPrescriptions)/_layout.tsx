@@ -3,7 +3,7 @@ import { Colors } from "@/constants/Colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function AddPrescriptionsLayout() {
-  const router = useRouter(); // Access the router
+  const router = useRouter();
 
   return (
     <Stack
@@ -15,7 +15,6 @@ export default function AddPrescriptionsLayout() {
         headerTitleAlign: "center",
       }}
     >
-      {/* Specify options for the 'index' screen */}
       <Stack.Screen
         name="index"
         options={{
@@ -26,7 +25,7 @@ export default function AddPrescriptionsLayout() {
               color={Colors.lightpink}
               style={{ marginLeft: 10 }}
               onPress={() => {
-                router.push("/home");
+                router.push("/HomeScreen");
               }}
             />
           ),
