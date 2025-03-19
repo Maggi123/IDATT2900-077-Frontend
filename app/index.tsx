@@ -17,7 +17,7 @@ export default function Index() {
       <TouchableOpacity
         style={styles.button1}
         onPress={() => {
-          router.push("/login");
+          router.push("/LoginScreen");
         }}
         disabled={!registered}
       >
@@ -26,7 +26,7 @@ export default function Index() {
       <TouchableOpacity
         style={styles.button2}
         onPress={() => {
-          router.push("/register");
+          router.push("/RegisterScreen");
         }}
         disabled={registered}
       >

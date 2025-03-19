@@ -3,8 +3,9 @@ import { useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 
 import { Colors } from "@/constants/Colors";
+import { defaultStyles } from "@/stylesheets/defaultStyles";
 
-export default function QRCode() {
+export default function QRCodeScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scannedData, setScannedData] = useState<string | null>(null);
 
@@ -15,9 +16,9 @@ export default function QRCode() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.overlay}>
-        <Text style={styles.overlayText}>
+    <View style={defaultStyles.container}>
+      <View style={defaultStyles.overlay}>
+        <Text style={defaultStyles.overlayText}>
           Scan QR code {"\n"}Place the QR code in the camera's field of view
         </Text>
       </View>
@@ -36,32 +37,17 @@ export default function QRCode() {
           }}
         />
       )}
-      {scannedData && <Text style={styles.result}>Scanned url: {scannedData}</Text>}
+      {scannedData && (
+        <Text style={styles.result}>Scanned url: {scannedData}</Text>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: Colors.background,
-  },
   camera: {
     width: "100%",
     height: "70%",
-  },
-  overlay: {
-    margin: 20,
-    padding: 12,
-    backgroundColor: Colors.white,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  overlayText: {
-    fontSize: 16,
-    color: Colors.text,
   },
   button: {
     padding: 12,

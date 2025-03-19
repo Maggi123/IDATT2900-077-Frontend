@@ -4,7 +4,7 @@ import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 
-export default function Home() {
+export default function HomeScreen() {
   const router = useRouter();
 
   const handleButtonPress = (button: string) => {

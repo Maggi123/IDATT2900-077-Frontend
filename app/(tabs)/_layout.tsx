@@ -2,7 +2,7 @@ import "react-native-get-random-values";
 import { Agent } from "@credo-ts/core";
 import AgentProvider from "@credo-ts/react-hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Tabs } from "expo-router"; // Import for navigation
+import { Tabs } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { TouchableOpacity, StyleSheet, View } from "react-native";
@@ -53,7 +53,7 @@ export default function TabLayout() {
         }}
       >
         <Tabs.Screen
-          name="home"
+          name="HomeScreen"
           options={{
             tabBarButton: (props) => (
               <TouchableOpacity {...props} style={styles.tabBarContainer}>
@@ -83,7 +83,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="logout"
+          name="Logout"
           options={{
             tabBarButton: (props) => (
               <TouchableOpacity {...props} style={styles.tabBarContainer}>

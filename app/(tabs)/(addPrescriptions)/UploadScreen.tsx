@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
-import { Colors } from "@/constants/Colors";
 
-export default function Upload() {
+import { Colors } from "@/constants/Colors";
+import { defaultStyles } from "@/stylesheets/defaultStyles";
+
+export default function UploadScreen() {
   // Keeping the state as an array to allow adding documents, but limiting to one document
   const [selectedDocument, setSelectedDocument] = useState<DocumentPicker.DocumentPickerAsset[]>([]);
 
@@ -23,10 +25,14 @@ export default function Upload() {
     }
   };
 
+  const handleUpload = () => {
+    console.log("Uploading file:", selectedDocument[0].name);
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.overlay}>
-        <Text style={styles.overlayText}>Upload document here</Text>
+    <View style={defaultStyles.container}>
+      <View style={defaultStyles.overlay}>
+        <Text style={defaultStyles.overlayText}>Select file here</Text>
 
         <View style={styles.fileContainer}>
           {selectedDocument.length > 0 ? (
@@ -37,21 +43,19 @@ export default function Upload() {
           ) : (
             <Text>No file selected</Text>
           )}
-          <Pressable style={styles.uploadButton} onPress={pickDocument}>
-            <Text style={styles.uploadButtonText}>Select File</Text>
+          <Pressable style={styles.filePicker} onPress={pickDocument}>
+            <Text style={styles.filePickerText}>Select</Text>
           </Pressable>
         </View>
       </View>
+      <Pressable style={defaultStyles.uploadButton} onPress={handleUpload}>
+        <Text style={defaultStyles.uploadButtonText}>Upload</Text>
+      </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: Colors.background,
-  },
   fileContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -60,25 +64,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: Colors.lightgray,
   },
-  uploadButton: {
+  filePicker: {
     padding: 10,
     backgroundColor: Colors.button,
     alignItems: "center",
     justifyContent: "center",
   },
-  uploadButtonText: {
+  filePickerText: {
     color: Colors.lightpink,
-  },
-  overlay: {
-    margin: 20,
-    padding: 12,
-    backgroundColor: Colors.white,
-    borderRadius: 8,
-    justifyContent: "center",
-    width: "90%",
-  },
-  overlayText: {
-    fontSize: 16,
-    color: Colors.text,
   },
 });
