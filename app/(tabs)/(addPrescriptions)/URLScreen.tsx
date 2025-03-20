@@ -1,14 +1,22 @@
+import { useAgent } from "@credo-ts/react-hooks";
 import { useState } from "react";
 import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
 
+import { receiveOpenId4VcCredentialWithAgent } from "@/agent/Vc";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/defaultStyles";
 
 export default function URLScreen() {
   const [url, setUrl] = useState("");
+  const agent = useAgent();
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     console.log("Uploading URLScreen:", url);
+    try {
+      await receiveOpenId4VcCredentialWithAgent(agent.agent, url);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
