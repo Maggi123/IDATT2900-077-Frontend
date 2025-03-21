@@ -2,7 +2,6 @@ import { CameraView, useCameraPermissions } from "expo-camera/next";
 import { useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 
-import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/defaultStyles";
 
 export default function QRCodeScreen() {

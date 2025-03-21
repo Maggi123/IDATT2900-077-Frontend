@@ -37,7 +37,9 @@ const mockPrescriptions = [
 ];
 
 export default function ViewPrescriptions() {
-  const [selectedPrescriptions, setSelectedPrescriptions] = useState<string[]>([],);
+  const [selectedPrescriptions, setSelectedPrescriptions] = useState<string[]>(
+    [],
+  );
 
   const toggleSelection = (id: string) => {
     setSelectedPrescriptions((prevSelected) =>
@@ -68,7 +70,9 @@ export default function ViewPrescriptions() {
             <View style={styles.topRow}>
               <Text style={styles.issuer}>{item.issuer}</Text>
               <Pressable
-                onPress={() => toggleSelection(item.id)}
+                onPress={() => {
+                  toggleSelection(item.id);
+                }}
                 style={[
                   styles.checkbox,
                   selectedPrescriptions.includes(item.id) && styles.checked,
