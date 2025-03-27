@@ -54,16 +54,6 @@ export default function LoginScreen() {
           </Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={defaultStyles.button}
-        onPress={() => {
-          router.push("/HomeScreen");
-        }}
-      >
-        <View style={defaultStyles.buttonContent}>
-          <Text style={defaultStyles.buttonText}>Go to Home</Text>
-        </View>
-      </TouchableOpacity>
     </View>
   );
 }
