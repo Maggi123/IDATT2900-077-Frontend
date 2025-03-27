@@ -1,43 +1,19 @@
+import { W3cCredentialRecord, W3cCredentialSubject } from "@credo-ts/core";
+import { useAgent } from "@credo-ts/react-hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useState } from "react";
-import { Text, View, StyleSheet, FlatList, Pressable } from "react-native";
+import { useEffect, useState } from "react";
+import { Text, View, StyleSheet, SectionList, Pressable } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/defaultStyles";
 
-// Mock data simulating prescriptions from a backend
-const mockPrescriptions = [
-  {
-    id: "1",
-    issuer: "St. Olavs Hospital",
-    name: "Ibuprofen",
-    message: "Take max 1 every 6th hour",
-    activeIngredient: "Ibuprofen",
-    added: "23.01.2025",
-    expires: "20.01.2026",
-  },
-  {
-    id: "2",
-    issuer: "Helse Stavanger HF",
-    name: "Paracetamol",
-    message: "Take max 1 every 6th hour",
-    activeIngredient: "Paracetamol",
-    added: "23.01.2025",
-    expires: "20.01.2026",
-  },
-  {
-    id: "3",
-    issuer: "St. Olavs Hospital",
-    name: "Amoxicillin",
-    message: "Take as prescribed by your doctor",
-    activeIngredient: "Amoxicillin",
-    added: "15.02.2025",
-    expires: "14.02.2026",
-  },
-];
-
 export default function ViewPrescriptions() {
-  const [selectedPrescriptions, setSelectedPrescriptions] = useState<string[]>([],);
+  const [selectedPrescriptions, setSelectedPrescriptions] = useState<string[]>(
+    [],
+  );
+  const agentContext = useAgent();
+
+  const [prescriptions, setPrescriptions] = useState<W3cCredentialRecord[]>([]);
 
   const toggleSelection = (id: string) => {
     setSelectedPrescriptions((prevSelected) =>
@@ -57,40 +33,62 @@ export default function ViewPrescriptions() {
     // Implement actual share logic here
   };
 
+  useEffect(() => {
+    agentContext.agent.w3cCredentials
+      .getAllCredentialRecords()
+      .then((prescriptions) => {
+        setPrescriptions(prescriptions);
+      })
+      .catch(console.error);
+  });
+
   return (
     <View style={defaultStyles.container}>
-      <FlatList
+      <SectionList
         style={styles.list}
-        data={mockPrescriptions}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
+        sections={prescriptions.map((credential) => {
+          const data: W3cCredentialSubject[] = [];
+          if (credential.credential.credentialSubject instanceof Array) {
+            data.concat(credential.credential.credentialSubject);
+          } else {
+            data.push(credential.credential.credentialSubject);
+          }
+          return {
+            title: credential,
+            data,
+          };
+        })}
+        keyExtractor={(_, key) => `${key}`}
+        renderItem={({ section, item }) => (
           <View style={styles.prescriptionBox}>
             <View style={styles.topRow}>
-              <Text style={styles.issuer}>{item.issuer}</Text>
+              <Text style={styles.issuer}>
+                {section.title.credential.issuerId}
+              </Text>
               <Pressable
-                onPress={() => toggleSelection(item.id)}
+                onPress={() => {
+                  toggleSelection(
+                    JSON.stringify(section) + JSON.stringify(item),
+                  );
+                }}
                 style={[
                   styles.checkbox,
-                  selectedPrescriptions.includes(item.id) && styles.checked,
+                  selectedPrescriptions.includes(
+                    JSON.stringify(section) + JSON.stringify(item),
+                  ) && styles.checked,
                 ]}
               />
             </View>
-            <Text style={styles.name}>{item.name}</Text>
-            <View style={styles.detailRow}>
-              <Text style={styles.detailTitle}>Message: </Text>
-              <Text style={styles.detail}>{item.message}</Text>
-            </View>
-            <View style={styles.detailRow}>
-              <Text style={styles.detailTitle}>Active ingredient: </Text>
-              <Text style={styles.detail}>{item.activeIngredient}</Text>
-            </View>
+            <Text style={styles.name}>
+              {(item.claims as any).medicationCodeableConcept.text}
+            </Text>
             <View style={styles.detailRow}>
               <Text style={styles.detailTitle}>Added: </Text>
-              <Text style={styles.detail}>{item.added}</Text>
-            </View>
-            <View style={styles.detailRow}>
-              <Text style={styles.detailTitle}>Expires: </Text>
-              <Text style={styles.detail}>{item.expires}</Text>
+              <Text style={styles.detail}>
+                {new Date(
+                  section.title.credential.issuanceDate,
+                ).toLocaleDateString()}
+              </Text>
             </View>
           </View>
         )}

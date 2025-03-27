@@ -1,7 +1,8 @@
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+
 import { Colors } from "@/constants/Colors";
 
 export default function Index() {

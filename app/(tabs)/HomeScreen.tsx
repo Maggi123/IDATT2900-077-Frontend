@@ -1,11 +1,25 @@
+import { useAgent } from "@credo-ts/react-hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 
 export default function HomeScreen() {
   const router = useRouter();
+  const agent = useAgent();
+  const [did, setDid] = useState("");
+
+  useEffect(() => {
+    const getDid = async () => {
+      const did = (await agent.agent.dids.getCreatedDids({ method: "indy" }))[0]
+        .did;
+      setDid(did);
+    };
+
+    getDid().catch(console.error);
+  }, [did, agent]);
 
   const handleButtonPress = (button: string) => {
     if (button === "Button 1") {
@@ -17,6 +31,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.text}>{did}</Text>
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
@@ -78,5 +93,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: Colors.lightpink,
     fontSize: 30,
+  },
+  text: {
+    fontSize: 18,
   },
 });

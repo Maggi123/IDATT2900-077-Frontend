@@ -1,6 +1,7 @@
-import { Stack, useRouter } from "expo-router";
-import { Colors } from "@/constants/Colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Stack, useRouter } from "expo-router";
+
+import { Colors } from "@/constants/Colors";
 
 export default function AddPrescriptionsLayout() {
   const router = useRouter();

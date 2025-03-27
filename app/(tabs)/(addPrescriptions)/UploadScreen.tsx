@@ -1,13 +1,15 @@
+import * as DocumentPicker from "expo-document-picker";
 import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import * as DocumentPicker from "expo-document-picker";
 
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/defaultStyles";
 
 export default function UploadScreen() {
   // Keeping the state as an array to allow adding documents, but limiting to one document
-  const [selectedDocument, setSelectedDocument] = useState<DocumentPicker.DocumentPickerAsset[]>([]);
+  const [selectedDocument, setSelectedDocument] = useState<
+    DocumentPicker.DocumentPickerAsset[]
+  >([]);
 
   const pickDocument = async () => {
     try {
