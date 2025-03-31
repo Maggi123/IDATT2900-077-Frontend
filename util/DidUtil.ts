@@ -41,9 +41,8 @@ export async function getDidForAgent(agent: Agent) {
       key: keyObject,
     });
   } catch (e) {
-    // If an error is caught, the DID not be used for storing VCs.
-    // TODO: Propagate error instead of handling it here
-    console.error("Unable to sign with DID verkey.", e);
+    // If an error is caught, the DID can not be used for storing VCs.
+    throw new Error(`Unable to use DID for singing. Error: ${e}`);
   }
 
   await agent.dids.import({
