@@ -1,4 +1,5 @@
 import { useAgent } from "@credo-ts/react-hooks";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
@@ -13,12 +14,16 @@ export default function URLScreen() {
   const [receivingState, setReceivingState] = useState(false);
   const agent = useAgent();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const handleUpload = async () => {
     console.log("Uploading URLScreen:", url);
     try {
       setReceivingState(true);
       await receiveAllOfferedOpenId4VcCredentialWithAgent(agent.agent, url);
+      await queryClient.invalidateQueries({
+        queryKey: ["prescription", "issuerNames"],
+      });
       setUrl("");
       setReceivingState(false);
       router.push("/Received");
