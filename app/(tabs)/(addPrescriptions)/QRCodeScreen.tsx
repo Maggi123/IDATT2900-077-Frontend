@@ -9,7 +9,7 @@ import {
   getAndStoreCredentialsFromResolvedOfferWithAgent,
   resolveCredentialOfferTokenWithAgent,
 } from "@/agent/Vc";
-import LoadingComponent from "@/component/LoadingComponent";
+import LoadingComponent from "@/components/LoadingComponent";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function QRCodeScreen() {

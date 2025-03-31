@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Text, View, StyleSheet, SectionList, Pressable } from "react-native";
 
-import LoadingComponent from "@/component/LoadingComponent";
+import LoadingComponent from "@/components/LoadingComponent";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 

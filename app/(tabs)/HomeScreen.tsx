@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
-import LoadingComponent from "@/component/LoadingComponent";
+import LoadingComponent from "@/components/LoadingComponent";
 import { Colors } from "@/constants/Colors";
 
 export default function HomeScreen() {

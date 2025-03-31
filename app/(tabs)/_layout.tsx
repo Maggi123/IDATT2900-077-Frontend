@@ -10,7 +10,7 @@ import { TouchableOpacity, StyleSheet, View } from "react-native";
 import { useAuth0 } from "react-native-auth0";
 
 import { initializeAgent } from "@/agent/Agent";
-import LoadingComponent from "@/component/LoadingComponent";
+import LoadingComponent from "@/components/LoadingComponent";
 import { Colors } from "@/constants/Colors";
 import { getDidForAgent } from "@/util/DidUtil";
 import { secureStoreKeyFromUserSub } from "@/util/KeyUtil";

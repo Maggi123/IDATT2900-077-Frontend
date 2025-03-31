@@ -8,7 +8,7 @@ import {
   resolveCredentialOfferTokenWithAgent,
   getAndStoreCredentialsFromResolvedOfferWithAgent,
 } from "@/agent/Vc";
-import LoadingComponent from "@/component/LoadingComponent";
+import LoadingComponent from "@/components/LoadingComponent";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
