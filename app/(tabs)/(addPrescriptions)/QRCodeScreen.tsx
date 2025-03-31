@@ -5,7 +5,10 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 
-import { receiveAllOfferedOpenId4VcCredentialWithAgent } from "@/agent/Vc";
+import {
+  getAndStoreCredentialsFromResolvedOfferWithAgent,
+  resolveCredentialOfferTokenWithAgent,
+} from "@/agent/Vc";
 import LoadingComponent from "@/component/LoadingComponent";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
@@ -24,9 +27,13 @@ export default function QRCodeScreen() {
       console.log("Uploading QRCodeScreen:", scannedData);
       try {
         setReceivingState(true);
-        await receiveAllOfferedOpenId4VcCredentialWithAgent(
+        const resolvedOffer = await resolveCredentialOfferTokenWithAgent(
           agentContext.agent,
           scannedData,
+        );
+        await getAndStoreCredentialsFromResolvedOfferWithAgent(
+          agentContext.agent,
+          resolvedOffer,
         );
         await queryClient.invalidateQueries({
           predicate: (query) =>

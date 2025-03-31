@@ -3,10 +3,13 @@ import {
   W3cJwtVerifiableCredential,
   W3cJsonLdVerifiableCredential,
 } from "@credo-ts/core";
-import { OpenId4VciCredentialBindingOptions } from "@credo-ts/openid4vc";
+import {
+  OpenId4VciCredentialBindingOptions,
+  OpenId4VciResolvedCredentialOffer,
+} from "@credo-ts/openid4vc";
 
 // Based on code found in: https://credo.js.org/guides/tutorials/openid4vc/receiving-and-proving-credentials-using-openid4vc-holder-module
-export async function receiveAllOfferedOpenId4VcCredentialWithAgent(
+export async function resolveCredentialOfferTokenWithAgent(
   agent: Agent,
   credentialOffer: string,
 ) {
@@ -18,6 +21,13 @@ export async function receiveAllOfferedOpenId4VcCredentialWithAgent(
     `Resolved credential offer ${JSON.stringify(resolvedCredentialOffer.credentialOfferPayload, null, 2)}`,
   );
 
+  return resolvedCredentialOffer;
+}
+
+export async function getAndStoreCredentialsFromResolvedOfferWithAgent(
+  agent: Agent,
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer,
+) {
   const accessTokenResponse =
     await agent.modules.openId4VcHolderModule.requestToken({
       resolvedCredentialOffer,

@@ -4,7 +4,10 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
 
-import { receiveAllOfferedOpenId4VcCredentialWithAgent } from "@/agent/Vc";
+import {
+  resolveCredentialOfferTokenWithAgent,
+  getAndStoreCredentialsFromResolvedOfferWithAgent,
+} from "@/agent/Vc";
 import LoadingComponent from "@/component/LoadingComponent";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
@@ -12,7 +15,7 @@ import { defaultStyles } from "@/stylesheets/DefaultStyles";
 export default function URLScreen() {
   const [url, setUrl] = useState("");
   const [receivingState, setReceivingState] = useState(false);
-  const agent = useAgent();
+  const agentContext = useAgent();
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -20,7 +23,14 @@ export default function URLScreen() {
     console.log("Uploading URLScreen:", url);
     try {
       setReceivingState(true);
-      await receiveAllOfferedOpenId4VcCredentialWithAgent(agent.agent, url);
+      const resolvedOffer = await resolveCredentialOfferTokenWithAgent(
+        agentContext.agent,
+        url,
+      );
+      await getAndStoreCredentialsFromResolvedOfferWithAgent(
+        agentContext.agent,
+        resolvedOffer,
+      );
       await queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey[0] === "prescription" ||
