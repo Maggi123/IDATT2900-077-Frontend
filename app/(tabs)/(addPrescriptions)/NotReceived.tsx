@@ -11,15 +11,18 @@ export default function Received() {
   };
 
   return (
-    <View style={defaultStyles.container}>
-      <View style={defaultStyles.overlay}>
-        <Text style={defaultStyles.overlayText}>
-          An error occurred while receiving prescription.
+    <View style={receivedNotReceivedStyles.container}>
+      <View style={receivedNotReceivedStyles.overlay}>
+        <Text style={receivedNotReceivedStyles.overlayText}>
+          An error occurred while receiving document(s)
         </Text>
+        <Pressable
+          style={receivedNotReceivedStyles.button}
+          onPress={handleNavigate}
+        >
+          <Text style={receivedNotReceivedStyles.buttonText}>Go back</Text>
+        </Pressable>
       </View>
-      <Pressable style={defaultStyles.uploadButton} onPress={handleNavigate}>
-        <Text style={defaultStyles.uploadButtonText}>Go back</Text>
-      </Pressable>
     </View>
   );
 }

@@ -11,15 +11,19 @@ export default function Received() {
   };
 
   return (
-    <View style={defaultStyles.container}>
-      <View style={defaultStyles.overlay}>
-        <Text style={defaultStyles.overlayText}>
-          Prescription received successfully.
+    <View style={receivedNotReceivedStyles.container}>
+      <View style={receivedNotReceivedStyles.overlay}>
+        <Text style={receivedNotReceivedStyles.headerText}>Document added</Text>
+        <Text style={receivedNotReceivedStyles.overlayText}>
+          You successfully received the document(s)
         </Text>
+        <Pressable
+          style={receivedNotReceivedStyles.button}
+          onPress={handleNavigate}
+        >
+          <Text style={receivedNotReceivedStyles.buttonText}>View</Text>
+        </Pressable>
       </View>
-      <Pressable style={defaultStyles.uploadButton} onPress={handleNavigate}>
-        <Text style={defaultStyles.uploadButtonText}>Go to Prescriptions</Text>
-      </Pressable>
     </View>
   );
 }
