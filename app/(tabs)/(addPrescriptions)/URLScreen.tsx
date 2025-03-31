@@ -22,7 +22,9 @@ export default function URLScreen() {
       setReceivingState(true);
       await receiveAllOfferedOpenId4VcCredentialWithAgent(agent.agent, url);
       await queryClient.invalidateQueries({
-        queryKey: ["prescription", "issuerNames"],
+        predicate: (query) =>
+          query.queryKey[0] === "prescription" ||
+          query.queryKey[0] === "issuerNames",
       });
       setUrl("");
       setReceivingState(false);

@@ -29,7 +29,9 @@ export default function QRCodeScreen() {
           scannedData,
         );
         await queryClient.invalidateQueries({
-          queryKey: ["prescription", "issuerNames"],
+          predicate: (query) =>
+            query.queryKey[0] === "prescription" ||
+            query.queryKey[0] === "issuerNames",
         });
         setReceivingState(false);
         setScannedData("");
