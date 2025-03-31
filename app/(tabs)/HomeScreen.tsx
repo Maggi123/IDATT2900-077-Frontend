@@ -1,25 +1,23 @@
 import { useAgent } from "@credo-ts/react-hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
+import LoadingComponent from "@/component/LoadingComponent";
 import { Colors } from "@/constants/Colors";
 
 export default function HomeScreen() {
   const router = useRouter();
   const agent = useAgent();
-  const [did, setDid] = useState("");
 
-  useEffect(() => {
-    const getDid = async () => {
-      const did = (await agent.agent.dids.getCreatedDids({ method: "indy" }))[0]
-        .did;
-      setDid(did);
-    };
-
-    getDid().catch(console.error);
-  }, [did, agent]);
+  const did = useQuery({
+    queryKey: ["did"],
+    queryFn: () =>
+      agent.agent.dids.getCreatedDids({ method: "indy" }).then((dids) => {
+        return dids[0].did;
+      }),
+  });
 
   const handleButtonPress = (button: string) => {
     if (button === "Button 1") {
@@ -29,9 +27,11 @@ export default function HomeScreen() {
     }
   };
 
+  if (did.isPending) return <LoadingComponent />;
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{did}</Text>
+      <Text style={styles.text}>{did.data}</Text>
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
