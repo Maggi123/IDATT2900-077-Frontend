@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { View, Text, Pressable } from "react-native";
 
-import { defaultStyles } from "@/stylesheets/defaultStyles";
+import { receivedNotReceivedStyles } from "@/stylesheets/ReceivedNotReceivedStyles";
 
 export default function Received() {
   const router = useRouter();

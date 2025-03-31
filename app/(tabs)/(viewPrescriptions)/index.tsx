@@ -7,7 +7,7 @@ import { Text, View, StyleSheet, SectionList, Pressable } from "react-native";
 
 import LoadingComponent from "@/component/LoadingComponent";
 import { Colors } from "@/constants/Colors";
-import { defaultStyles } from "@/stylesheets/defaultStyles";
+import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function ViewPrescriptions() {
   const [selectedPrescriptions, setSelectedPrescriptions] = useState<string[]>(

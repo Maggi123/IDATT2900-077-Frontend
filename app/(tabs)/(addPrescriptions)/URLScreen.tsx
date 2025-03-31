@@ -7,7 +7,7 @@ import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
 import { receiveAllOfferedOpenId4VcCredentialWithAgent } from "@/agent/Vc";
 import LoadingComponent from "@/component/LoadingComponent";
 import { Colors } from "@/constants/Colors";
-import { defaultStyles } from "@/stylesheets/defaultStyles";
+import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function URLScreen() {
   const [url, setUrl] = useState("");

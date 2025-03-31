@@ -7,7 +7,7 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 
 import { receiveAllOfferedOpenId4VcCredentialWithAgent } from "@/agent/Vc";
 import LoadingComponent from "@/component/LoadingComponent";
-import { defaultStyles } from "@/stylesheets/defaultStyles";
+import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function QRCodeScreen() {
   const [permission, requestPermission] = useCameraPermissions();
