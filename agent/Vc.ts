@@ -72,9 +72,13 @@ export async function getAndStoreCredentialsFromResolvedOfferWithAgent(
     try {
       await agent.genericRecords.save({
         id: credential.credential.issuer,
-        content:
-          resolvedCredentialOffer.metadata.credentialIssuerMetadata.display[0]
-            .name,
+        content: {
+          name: resolvedCredentialOffer.metadata.credentialIssuerMetadata
+            .display
+            ? (resolvedCredentialOffer.metadata.credentialIssuerMetadata
+                .display[0].name ?? "N/A")
+            : "N/A",
+        },
       });
     } catch (e) {
       agent.config.logger.debug(

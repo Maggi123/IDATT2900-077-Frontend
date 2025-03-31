@@ -49,7 +49,7 @@ export default function ViewPrescriptions() {
       agentContext.agent.genericRecords.getAll().then((records) => {
         const issuerNames: Record<string, unknown> = {};
         for (const record of records) {
-          issuerNames[record.id] = record.content;
+          issuerNames[record.id] = record.content.name;
         }
         return issuerNames;
       }),
