@@ -59,8 +59,20 @@ export async function receiveAllOfferedOpenId4VcCredentialWithAgent(
 
   // Store the received credentials
   for (const credential of credentials) {
+    try {
+      await agent.genericRecords.save({
+        id: credential.credential.issuer,
+        content:
+          resolvedCredentialOffer.metadata.credentialIssuerMetadata.display[0]
+            .name,
+      });
+    } catch (e) {
+      agent.config.logger.debug(
+        `Unable to save generic record containing issuer name. Error ${e}`,
+      );
+    }
+
     const vc = credential.credential;
-    console.log(typeof vc);
     if (
       vc instanceof W3cJwtVerifiableCredential ||
       vc instanceof W3cJsonLdVerifiableCredential
