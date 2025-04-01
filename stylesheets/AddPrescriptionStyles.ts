@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
-export const receivedNotReceivedStyles = StyleSheet.create({
+export const addPrescriptionStyles = StyleSheet.create({
   container: {
     ...defaultStyles.container,
     justifyContent: "center",

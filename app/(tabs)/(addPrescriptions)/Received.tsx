@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { View, Text, Pressable } from "react-native";
 
-import { receivedNotReceivedStyles } from "@/stylesheets/ReceivedNotReceivedStyles";
+import { addPrescriptionStyles } from "@/stylesheets/AddPrescriptionStyles";
 
 export default function Received() {
   const router = useRouter();
@@ -11,17 +11,17 @@ export default function Received() {
   };
 
   return (
-    <View style={receivedNotReceivedStyles.container}>
-      <View style={receivedNotReceivedStyles.overlay}>
-        <Text style={receivedNotReceivedStyles.headerText}>Document added</Text>
-        <Text style={receivedNotReceivedStyles.overlayText}>
+    <View style={addPrescriptionStyles.container}>
+      <View style={addPrescriptionStyles.overlay}>
+        <Text style={addPrescriptionStyles.headerText}>Document added</Text>
+        <Text style={addPrescriptionStyles.overlayText}>
           You successfully received the document(s)
         </Text>
         <Pressable
-          style={receivedNotReceivedStyles.button}
+          style={addPrescriptionStyles.button}
           onPress={handleNavigate}
         >
-          <Text style={receivedNotReceivedStyles.buttonText}>View</Text>
+          <Text style={addPrescriptionStyles.buttonText}>View</Text>
         </Pressable>
       </View>
     </View>

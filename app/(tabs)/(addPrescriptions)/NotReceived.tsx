@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { View, Text, Pressable } from "react-native";
 
-import { receivedNotReceivedStyles } from "@/stylesheets/ReceivedNotReceivedStyles";
+import { addPrescriptionStyles } from "@/stylesheets/AddPrescriptionStyles";
 
 export default function Received() {
   const router = useRouter();
@@ -11,16 +11,16 @@ export default function Received() {
   };
 
   return (
-    <View style={receivedNotReceivedStyles.container}>
-      <View style={receivedNotReceivedStyles.overlay}>
-        <Text style={receivedNotReceivedStyles.overlayText}>
+    <View style={addPrescriptionStyles.container}>
+      <View style={addPrescriptionStyles.overlay}>
+        <Text style={addPrescriptionStyles.overlayText}>
           An error occurred while receiving document(s)
         </Text>
         <Pressable
-          style={receivedNotReceivedStyles.button}
+          style={addPrescriptionStyles.button}
           onPress={handleNavigate}
         >
-          <Text style={receivedNotReceivedStyles.buttonText}>Go back</Text>
+          <Text style={addPrescriptionStyles.buttonText}>Ok</Text>
         </Pressable>
       </View>
     </View>
