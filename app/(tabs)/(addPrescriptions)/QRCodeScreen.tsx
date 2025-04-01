@@ -6,19 +6,24 @@ import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 
 import {
-  getAndStoreCredentialsFromResolvedOfferWithAgent,
-  resolveCredentialOfferTokenWithAgent,
+  resolveAndGetCredentialsWithAgent,
+  storeIssuerNameFromOfferWithAgent,
 } from "@/agent/Vc";
 import LoadingComponent from "@/components/LoadingComponent";
+import { useCredentialResponsesStore } from "@/state/CredentialResponsesStore";
+import { useIssuerInfoStore } from "@/state/IssuerInfoStore";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function QRCodeScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scannedData, setScannedData] = useState<string>("");
   const [receivingState, setReceivingState] = useState(false);
-  const queryClient = useQueryClient();
   const router = useRouter();
   const agentContext = useAgent();
+  const queryClient = useQueryClient();
+
+  const setCredentialResponses = useCredentialResponsesStore(({ set }) => set);
+  const setIssuerInfo = useIssuerInfoStore(({ set }) => set);
 
   const isPermissionGranted = Boolean(permission?.granted);
 
@@ -27,22 +32,33 @@ export default function QRCodeScreen() {
       console.log("Uploading QRCodeScreen:", scannedData);
       try {
         setReceivingState(true);
-        const resolvedOffer = await resolveCredentialOfferTokenWithAgent(
-          agentContext.agent,
-          scannedData,
-        );
-        await getAndStoreCredentialsFromResolvedOfferWithAgent(
+        const [resolvedOffer, credentialResponses] =
+          await resolveAndGetCredentialsWithAgent(
+            agentContext.agent,
+            scannedData,
+          );
+        if (credentialResponses.length < 1)
+          throw new Error("No credentials were received.");
+
+        if (credentialResponses.length > 1)
+          throw new Error(
+            "Handling of multiple credentials is not implemented",
+          );
+
+        const issuerName = await storeIssuerNameFromOfferWithAgent(
           agentContext.agent,
           resolvedOffer,
+          credentialResponses[0].credential.credential.issuerId,
         );
+
         await queryClient.invalidateQueries({
-          predicate: (query) =>
-            query.queryKey[0] === "prescription" ||
-            query.queryKey[0] === "issuerNames",
+          queryKey: ["issuerNames"],
         });
+        setCredentialResponses(credentialResponses);
+        if (issuerName) setIssuerInfo(issuerName);
         setReceivingState(false);
         setScannedData("");
-        router.push("/Received");
+        router.push("/DeclineAcceptScreen");
       } catch (e) {
         setReceivingState(false);
         setScannedData("");

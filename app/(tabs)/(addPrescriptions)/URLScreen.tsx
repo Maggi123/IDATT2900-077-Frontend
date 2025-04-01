@@ -5,11 +5,13 @@ import { useState } from "react";
 import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
 
 import {
-  resolveCredentialOfferTokenWithAgent,
-  getAndStoreCredentialsFromResolvedOfferWithAgent,
+  resolveAndGetCredentialsWithAgent,
+  storeIssuerNameFromOfferWithAgent,
 } from "@/agent/Vc";
 import LoadingComponent from "@/components/LoadingComponent";
 import { Colors } from "@/constants/Colors";
+import { useCredentialResponsesStore } from "@/state/CredentialResponsesStore";
+import { useIssuerInfoStore } from "@/state/IssuerInfoStore";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function URLScreen() {
@@ -19,26 +21,35 @@ export default function URLScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const setCredentialResponses = useCredentialResponsesStore(({ set }) => set);
+  const setIssuerInfo = useIssuerInfoStore(({ set }) => set);
+
   const handleUpload = async () => {
     console.log("Uploading URLScreen:", url);
     try {
       setReceivingState(true);
-      const resolvedOffer = await resolveCredentialOfferTokenWithAgent(
-        agentContext.agent,
-        url,
-      );
-      await getAndStoreCredentialsFromResolvedOfferWithAgent(
+      const [resolvedOffer, credentialResponses] =
+        await resolveAndGetCredentialsWithAgent(agentContext.agent, url);
+      if (credentialResponses.length < 1)
+        throw new Error("No credentials were received.");
+
+      if (credentialResponses.length > 1)
+        throw new Error("Handling of multiple credentials is not implemented");
+
+      const issuerName = await storeIssuerNameFromOfferWithAgent(
         agentContext.agent,
         resolvedOffer,
+        credentialResponses[0].credential.credential.issuerId,
       );
+
       await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === "prescription" ||
-          query.queryKey[0] === "issuerNames",
+        queryKey: ["issuerNames"],
       });
+      setCredentialResponses(credentialResponses);
+      if (issuerName) setIssuerInfo(issuerName);
       setUrl("");
       setReceivingState(false);
-      router.push("/Received");
+      router.push("/DeclineAcceptScreen");
     } catch (e) {
       setReceivingState(false);
       setUrl("");
