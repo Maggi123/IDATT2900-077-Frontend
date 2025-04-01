@@ -7,7 +7,7 @@ export default function Received() {
   const router = useRouter();
 
   const handleNavigate = () => {
-    router.back();
+    router.push("/(tabs)/(addPrescriptions)");
   };
 
   return (
