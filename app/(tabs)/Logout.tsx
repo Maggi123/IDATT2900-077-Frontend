@@ -16,7 +16,7 @@ export default function Logout() {
   return (
     <View style={defaultStyles.container}>
       <TouchableOpacity onPress={onLogoutPress} style={defaultStyles.button}>
-        <Text>Logout</Text>
+        <Text style={defaultStyles.buttonText}>Log out</Text>
       </TouchableOpacity>
     </View>
   );
