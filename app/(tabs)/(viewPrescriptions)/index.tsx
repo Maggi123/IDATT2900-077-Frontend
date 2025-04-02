@@ -77,12 +77,9 @@ export default function ViewPrescriptions() {
       <SectionList
         style={styles.list}
         sections={prescriptions.data.map((credential) => {
-          const data: W3cCredentialSubject[] = [];
-          if (credential.credential.credentialSubject instanceof Array) {
-            data.concat(credential.credential.credentialSubject);
-          } else {
-            data.push(credential.credential.credentialSubject);
-          }
+          const data: W3cCredentialSubject[] = asArray(
+            credential.credential.credentialSubject,
+          );
           return {
             title: credential,
             data,
