@@ -5,6 +5,7 @@ import { addPrescriptionStyles } from "@/stylesheets/AddPrescriptionStyles";
 
 type PrescriptionDeclineAcceptComponentProps = {
   newPrescriptionDescription: PrescriptionClaims;
+  expirationDate?: Date;
 };
 
 export default function PrescriptionDeclineAcceptComponent(
@@ -37,6 +38,10 @@ export default function PrescriptionDeclineAcceptComponent(
               props.newPrescriptionDescription.authoredOn,
             ).toLocaleDateString()
           : "N/A"}
+      </Text>
+      <Text style={styles.overlaySectionHeaderText}>Expires at: </Text>
+      <Text style={styles.overlaySectionText}>
+        {props.expirationDate?.toLocaleDateString() ?? "N/A"}
       </Text>
     </View>
   );
