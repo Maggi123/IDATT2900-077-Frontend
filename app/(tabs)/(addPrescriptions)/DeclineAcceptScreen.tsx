@@ -1,5 +1,6 @@
 import { asArray } from "@credo-ts/core";
 import { useAgent } from "@credo-ts/react-hooks";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { Redirect, useRouter } from "expo-router";
 import { View, Text, Pressable, StyleSheet } from "react-native";
@@ -88,10 +89,12 @@ export default function DeclineAcceptScreen() {
       />
       <View style={styles.buttonContainer}>
         <Pressable style={buttonStyles.declineButton} onPress={handleDecline}>
+          <MaterialCommunityIcons name="close" size={18} />
           <Text style={styles.buttonText}>Decline</Text>
         </Pressable>
         <Pressable style={buttonStyles.acceptButton} onPress={handleAccept}>
-          <Text style={styles.buttonText}>Accept document</Text>
+          <MaterialCommunityIcons name="check" size={18} />
+          <Text style={styles.buttonText}>Accept</Text>
         </Pressable>
       </View>
     </View>
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
     color: "black",
   },
   buttonContainer: {
-    flex: 1,
+    flex: 0.55,
     flexDirection: "row",
     width: "100%",
     padding: 10,
@@ -112,11 +115,12 @@ const styles = StyleSheet.create({
   },
   button: {
     ...defaultStyles.button,
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-evenly",
     width: "45%",
     margin: 10,
     padding: 10,
-    height: "70%",
   },
   buttonText: {
     ...addPrescriptionStyles.buttonText,
