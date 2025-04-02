@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 
 import { PrescriptionClaims } from "@/agent/Vc";
 import { addPrescriptionStyles } from "@/stylesheets/AddPrescriptionStyles";
@@ -17,21 +17,21 @@ export default function PrescriptionDeclineAcceptComponent(
         Check if prescription information is correct, and decline or accept the
         prescription
       </Text>
-      <Text style={addPrescriptionStyles.overlayText}>Name: </Text>
-      <Text style={addPrescriptionStyles.overlayText}>
+      <Text style={styles.overlaySectionHeaderText}>Name: </Text>
+      <Text style={styles.overlaySectionText}>
         {props.newPrescriptionDescription
           ? props.newPrescriptionDescription.name
           : "N/A"}
       </Text>
-      <Text style={addPrescriptionStyles.overlayText}>Active ingredient:</Text>
-      <Text style={addPrescriptionStyles.overlayText}>
+      <Text style={styles.overlaySectionHeaderText}>Active ingredient:</Text>
+      <Text style={styles.overlaySectionText}>
         {props.newPrescriptionDescription
           ? ((props.newPrescriptionDescription.activeIngredient as string) ??
             "N/A")
           : "N/A"}
       </Text>
-      <Text style={addPrescriptionStyles.overlayText}>Authored: </Text>
-      <Text style={addPrescriptionStyles.overlayText}>
+      <Text style={styles.overlaySectionHeaderText}>Authored: </Text>
+      <Text style={styles.overlaySectionText}>
         {props.newPrescriptionDescription
           ? new Date(
               props.newPrescriptionDescription.authoredOn,
@@ -41,3 +41,14 @@ export default function PrescriptionDeclineAcceptComponent(
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  overlaySectionHeaderText: {
+    ...addPrescriptionStyles.overlayText,
+    fontSize: 18,
+  },
+  overlaySectionText: {
+    ...addPrescriptionStyles.overlayText,
+    marginTop: 0,
+  },
+});
