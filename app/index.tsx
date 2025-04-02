@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 
 import { Colors } from "@/constants/Colors";
+import { defaultStyles } from "@/stylesheets/defaultStyles";
 
 export default function Index() {
   const [registered, setRegistered] = useState(false);
@@ -15,24 +16,26 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.button1}
-        onPress={() => {
-          router.push("/LoginScreen");
-        }}
-        disabled={!registered}
-      >
-        <Text style={styles.buttonText1}>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button2}
-        onPress={() => {
-          router.push("/RegisterScreen");
-        }}
-        disabled={registered}
-      >
-        <Text style={styles.buttonText2}>Register</Text>
-      </TouchableOpacity>
+      {!registered && (
+        <TouchableOpacity
+          style={defaultStyles.button}
+          onPress={() => {
+            router.push("/RegisterScreen");
+          }}
+        >
+          <Text style={defaultStyles.buttonText}>Register</Text>
+        </TouchableOpacity>
+      )}
+      {registered && (
+        <TouchableOpacity
+          style={defaultStyles.button}
+          onPress={() => {
+            router.push("/LoginScreen");
+          }}
+        >
+          <Text style={defaultStyles.buttonText}>Login</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -44,33 +47,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: Colors.background,
     gap: 10,
-  },
-  button1: {
-    width: "50%",
-    paddingVertical: 15,
-    backgroundColor: Colors.button,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  button2: {
-    width: "50%",
-    paddingVertical: 15,
-    backgroundColor: Colors.background,
-    borderRadius: 8,
-    borderWidth: 3,
-    borderColor: Colors.button,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonText1: {
-    color: Colors.lightpink,
-    fontSize: 25,
-    fontWeight: "bold",
-  },
-  buttonText2: {
-    color: Colors.button,
-    fontSize: 25,
-    fontWeight: "bold",
   },
 });

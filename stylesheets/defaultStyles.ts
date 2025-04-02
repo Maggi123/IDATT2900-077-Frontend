@@ -20,7 +20,7 @@ export const defaultStyles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
     justifyContent: "center",
-    alignItems: "flex-start",
+    alignItems: "center",
   },
   buttonContent: {
     flexDirection: "row",
