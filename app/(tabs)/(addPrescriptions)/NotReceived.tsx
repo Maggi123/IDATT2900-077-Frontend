@@ -1,25 +1,28 @@
 import { useRouter } from "expo-router";
 import { View, Text, Pressable } from "react-native";
 
-import { defaultStyles } from "@/stylesheets/defaultStyles";
+import { addPrescriptionStyles } from "@/stylesheets/AddPrescriptionStyles";
 
 export default function Received() {
   const router = useRouter();
 
   const handleNavigate = () => {
-    router.back();
+    router.push("/(tabs)/(addPrescriptions)");
   };
 
   return (
-    <View style={defaultStyles.container}>
-      <View style={defaultStyles.overlay}>
-        <Text style={defaultStyles.overlayText}>
-          An error occurred while receiving prescription.
+    <View style={addPrescriptionStyles.container}>
+      <View style={addPrescriptionStyles.overlay}>
+        <Text style={addPrescriptionStyles.overlayText}>
+          An error occurred while receiving document(s)
         </Text>
+        <Pressable
+          style={addPrescriptionStyles.button}
+          onPress={handleNavigate}
+        >
+          <Text style={addPrescriptionStyles.buttonText}>Ok</Text>
+        </Pressable>
       </View>
-      <Pressable style={defaultStyles.uploadButton} onPress={handleNavigate}>
-        <Text style={defaultStyles.uploadButtonText}>Go back</Text>
-      </Pressable>
     </View>
   );
 }

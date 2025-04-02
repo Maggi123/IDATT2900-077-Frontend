@@ -11,4 +11,6 @@ export const Colors = {
   green: "#219653",
   red: "#a31f0e",
   lightgray: "#D3D3D3",
+  declinered: "#ff866c",
+  acceptgray: "#d4d4d4",
 };

@@ -1,19 +1,19 @@
-import { W3cCredentialRecord, W3cCredentialSubject } from "@credo-ts/core";
+import { W3cCredentialSubject } from "@credo-ts/core";
 import { useAgent } from "@credo-ts/react-hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { Text, View, StyleSheet, SectionList, Pressable } from "react-native";
 
+import LoadingComponent from "@/components/LoadingComponent";
 import { Colors } from "@/constants/Colors";
-import { defaultStyles } from "@/stylesheets/defaultStyles";
+import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function ViewPrescriptions() {
   const [selectedPrescriptions, setSelectedPrescriptions] = useState<string[]>(
     [],
   );
   const agentContext = useAgent();
-
-  const [prescriptions, setPrescriptions] = useState<W3cCredentialRecord[]>([]);
 
   const toggleSelection = (id: string) => {
     setSelectedPrescriptions((prevSelected) =>
@@ -33,20 +33,50 @@ export default function ViewPrescriptions() {
     // Implement actual share logic here
   };
 
-  useEffect(() => {
-    agentContext.agent.w3cCredentials
-      .getAllCredentialRecords()
-      .then((prescriptions) => {
-        setPrescriptions(prescriptions);
-      })
-      .catch(console.error);
+  const prescriptions = useQuery({
+    queryKey: ["prescription"],
+    queryFn: () =>
+      agentContext.agent.w3cCredentials
+        .getAllCredentialRecords()
+        .then((prescriptions) => {
+          return prescriptions;
+        }),
   });
+
+  const issuerNames = useQuery({
+    queryKey: ["issuerNames"],
+    queryFn: () =>
+      agentContext.agent.genericRecords.getAll().then((records) => {
+        const issuerNames: Record<string, unknown> = {};
+        for (const record of records) {
+          issuerNames[record.id] = record.content.name;
+        }
+        return issuerNames;
+      }),
+  });
+
+  if (prescriptions.isPending || issuerNames.isPending)
+    return <LoadingComponent />;
+
+  if (
+    !prescriptions.isSuccess ||
+    !issuerNames.isSuccess ||
+    prescriptions.error ||
+    issuerNames.error
+  )
+    return (
+      <View style={defaultStyles.container}>
+        <Text style={defaultStyles.title}>
+          Something went wrong fetching data.
+        </Text>
+      </View>
+    );
 
   return (
     <View style={defaultStyles.container}>
       <SectionList
         style={styles.list}
-        sections={prescriptions.map((credential) => {
+        sections={prescriptions.data.map((credential) => {
           const data: W3cCredentialSubject[] = [];
           if (credential.credential.credentialSubject instanceof Array) {
             data.concat(credential.credential.credentialSubject);
@@ -63,7 +93,11 @@ export default function ViewPrescriptions() {
           <View style={styles.prescriptionBox}>
             <View style={styles.topRow}>
               <Text style={styles.issuer}>
-                {section.title.credential.issuerId}
+                {issuerNames
+                  ? ((issuerNames.data[
+                      section.title.credential.issuerId
+                    ] as string) ?? section.title.credential.issuerId)
+                  : section.title.credential.issuerId}
               </Text>
               <Pressable
                 onPress={() => {
@@ -80,14 +114,30 @@ export default function ViewPrescriptions() {
               />
             </View>
             <Text style={styles.name}>
-              {(item.claims as any).medicationCodeableConcept.text}
+              {item.claims ? (item.claims.name as string) : "N/A"}
             </Text>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailTitle}>Active ingredient: </Text>
+              <Text style={styles.detail}>
+                {item.claims
+                  ? ((item.claims.activeIngredient as string) ?? "N/A")
+                  : "N/A"}
+              </Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailTitle}>Authored: </Text>
+              <Text style={styles.detail}>
+                {item.claims
+                  ? new Date(
+                      item.claims.authoredOn as string,
+                    ).toLocaleDateString()
+                  : "N/A"}
+              </Text>
+            </View>
             <View style={styles.detailRow}>
               <Text style={styles.detailTitle}>Added: </Text>
               <Text style={styles.detail}>
-                {new Date(
-                  section.title.credential.issuanceDate,
-                ).toLocaleDateString()}
+                {section.title.createdAt.toLocaleDateString()}
               </Text>
             </View>
           </View>

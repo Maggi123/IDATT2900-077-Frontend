@@ -3,13 +3,23 @@ import {
   W3cJwtVerifiableCredential,
   W3cJsonLdVerifiableCredential,
 } from "@credo-ts/core";
-import { OpenId4VciCredentialBindingOptions } from "@credo-ts/openid4vc";
+import {
+  OpenId4VciCredentialBindingOptions,
+  OpenId4VciCredentialResponse,
+  OpenId4VciResolvedCredentialOffer,
+} from "@credo-ts/openid4vc";
+
+export interface PrescriptionClaims {
+  name: string;
+  authoredOn: string;
+  activeIngredient?: string;
+}
 
 // Based on code found in: https://credo.js.org/guides/tutorials/openid4vc/receiving-and-proving-credentials-using-openid4vc-holder-module
-export async function receiveAllOfferedOpenId4VcCredentialWithAgent(
+export async function resolveCredentialOfferWithAgent(
   agent: Agent,
   credentialOffer: string,
-) {
+): Promise<OpenId4VciResolvedCredentialOffer> {
   const resolvedCredentialOffer =
     await agent.modules.openId4VcHolderModule.resolveCredentialOffer(
       credentialOffer,
@@ -18,6 +28,13 @@ export async function receiveAllOfferedOpenId4VcCredentialWithAgent(
     `Resolved credential offer ${JSON.stringify(resolvedCredentialOffer.credentialOfferPayload, null, 2)}`,
   );
 
+  return resolvedCredentialOffer;
+}
+
+export async function getCredentialsWithAgent(
+  agent: Agent,
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer | null,
+): Promise<OpenId4VciCredentialResponse[]> {
   const accessTokenResponse =
     await agent.modules.openId4VcHolderModule.requestToken({
       resolvedCredentialOffer,
@@ -57,10 +74,32 @@ export async function receiveAllOfferedOpenId4VcCredentialWithAgent(
 
   console.info(`Received credentials ${JSON.stringify(credentials, null, 2)}`);
 
+  return credentials;
+}
+
+export async function resolveAndGetCredentialsWithAgent(
+  agent: Agent,
+  credentialOffer: string,
+): Promise<
+  [OpenId4VciResolvedCredentialOffer, OpenId4VciCredentialResponse[]]
+> {
+  const resolvedCredentialOffer = await resolveCredentialOfferWithAgent(
+    agent,
+    credentialOffer,
+  );
+  return [
+    resolvedCredentialOffer,
+    await getCredentialsWithAgent(agent, resolvedCredentialOffer),
+  ];
+}
+
+export async function storeCredentialsWithAgent(
+  agent: Agent,
+  credentials: OpenId4VciCredentialResponse[],
+) {
   // Store the received credentials
   for (const credential of credentials) {
     const vc = credential.credential;
-    console.log(typeof vc);
     if (
       vc instanceof W3cJwtVerifiableCredential ||
       vc instanceof W3cJsonLdVerifiableCredential
@@ -70,4 +109,29 @@ export async function receiveAllOfferedOpenId4VcCredentialWithAgent(
       });
     } else throw new Error("Invalid credential type.");
   }
+}
+
+export async function storeIssuerNameFromOfferWithAgent(
+  agent: Agent,
+  resolvedOffer: OpenId4VciResolvedCredentialOffer,
+  issuerDid: string,
+) {
+  const issuerName = resolvedOffer.metadata.credentialIssuerMetadata.display
+    ? (resolvedOffer.metadata.credentialIssuerMetadata.display[0].name ?? "N/A")
+    : "N/A";
+
+  try {
+    await agent.genericRecords.save({
+      id: issuerDid,
+      content: {
+        name: issuerName,
+      },
+    });
+  } catch (e) {
+    agent.config.logger.debug(
+      `Unable to save generic record containing issuer name. Error ${e}`,
+    );
+  }
+
+  return issuerName;
 }

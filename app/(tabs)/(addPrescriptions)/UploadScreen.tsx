@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Colors } from "@/constants/Colors";
-import { defaultStyles } from "@/stylesheets/defaultStyles";
+import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function UploadScreen() {
   // Keeping the state as an array to allow adding documents, but limiting to one document

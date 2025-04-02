@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { View, Text, Pressable } from "react-native";
 
-import { defaultStyles } from "@/stylesheets/defaultStyles";
+import { addPrescriptionStyles } from "@/stylesheets/AddPrescriptionStyles";
 
 export default function Received() {
   const router = useRouter();
@@ -11,15 +11,19 @@ export default function Received() {
   };
 
   return (
-    <View style={defaultStyles.container}>
-      <View style={defaultStyles.overlay}>
-        <Text style={defaultStyles.overlayText}>
-          Prescription received successfully.
+    <View style={addPrescriptionStyles.container}>
+      <View style={addPrescriptionStyles.overlay}>
+        <Text style={addPrescriptionStyles.headerText}>Document added</Text>
+        <Text style={addPrescriptionStyles.overlayText}>
+          You successfully received the document(s)
         </Text>
+        <Pressable
+          style={addPrescriptionStyles.button}
+          onPress={handleNavigate}
+        >
+          <Text style={addPrescriptionStyles.buttonText}>View</Text>
+        </Pressable>
       </View>
-      <Pressable style={defaultStyles.uploadButton} onPress={handleNavigate}>
-        <Text style={defaultStyles.uploadButtonText}>Go to Prescriptions</Text>
-      </Pressable>
     </View>
   );
 }

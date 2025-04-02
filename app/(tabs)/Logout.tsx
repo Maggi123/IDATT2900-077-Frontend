@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import { View, TouchableOpacity, Text } from "react-native";
 import { useAuth0 } from "react-native-auth0";
 
-import { defaultStyles } from "@/stylesheets/defaultStyles";
+import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function Logout() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function Logout() {
   return (
     <View style={defaultStyles.container}>
       <TouchableOpacity onPress={onLogoutPress} style={defaultStyles.button}>
-        <Text>Logout</Text>
+        <Text style={defaultStyles.buttonText}>Log out</Text>
       </TouchableOpacity>
     </View>
   );

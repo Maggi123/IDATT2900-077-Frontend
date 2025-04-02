@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import { useAuth0 } from "react-native-auth0";
 
-import { defaultStyles } from "@/stylesheets/defaultStyles";
+import { defaultStyles } from "@/stylesheets/DefaultStyles";
 import { secureStoreKeyFromUserSub } from "@/util/KeyUtil";
 
 export default function RegisterScreen() {

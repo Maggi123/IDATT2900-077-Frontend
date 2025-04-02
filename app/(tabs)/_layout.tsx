@@ -2,6 +2,7 @@ import "react-native-get-random-values";
 import { Agent } from "@credo-ts/core";
 import AgentProvider from "@credo-ts/react-hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useQueryClient } from "@tanstack/react-query";
 import { Tabs } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
@@ -9,7 +10,7 @@ import { TouchableOpacity, StyleSheet, View } from "react-native";
 import { useAuth0 } from "react-native-auth0";
 
 import { initializeAgent } from "@/agent/Agent";
-import LoadingComponent from "@/component/LoadingComponent";
+import LoadingComponent from "@/components/LoadingComponent";
 import { Colors } from "@/constants/Colors";
 import { getDidForAgent } from "@/util/DidUtil";
 import { secureStoreKeyFromUserSub } from "@/util/KeyUtil";
@@ -17,6 +18,7 @@ import { secureStoreKeyFromUserSub } from "@/util/KeyUtil";
 export default function TabLayout() {
   const [agent, setAgent] = useState<Agent>();
   const { user } = useAuth0();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const setupAgent = async () => {
@@ -24,10 +26,13 @@ export default function TabLayout() {
         secureStoreKeyFromUserSub(user!.sub!),
       );
       const agent: Agent = await initializeAgent(user!.sub!, key!);
-      setAgent(agent);
-
       await getDidForAgent(agent);
+      await queryClient.invalidateQueries({
+        queryKey: ["did"],
+      });
       console.info("Agent has DID.");
+
+      setAgent(agent);
     };
 
     setupAgent().catch(console.error);

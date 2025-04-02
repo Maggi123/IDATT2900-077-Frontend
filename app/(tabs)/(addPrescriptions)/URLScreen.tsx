@@ -1,27 +1,55 @@
 import { useAgent } from "@credo-ts/react-hooks";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
 
-import { receiveAllOfferedOpenId4VcCredentialWithAgent } from "@/agent/Vc";
-import LoadingComponent from "@/component/LoadingComponent";
+import {
+  resolveAndGetCredentialsWithAgent,
+  storeIssuerNameFromOfferWithAgent,
+} from "@/agent/Vc";
+import LoadingComponent from "@/components/LoadingComponent";
 import { Colors } from "@/constants/Colors";
-import { defaultStyles } from "@/stylesheets/defaultStyles";
+import { useCredentialResponsesStore } from "@/state/CredentialResponsesStore";
+import { useIssuerInfoStore } from "@/state/IssuerInfoStore";
+import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function URLScreen() {
   const [url, setUrl] = useState("");
   const [receivingState, setReceivingState] = useState(false);
-  const agent = useAgent();
+  const agentContext = useAgent();
   const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const setCredentialResponses = useCredentialResponsesStore(({ set }) => set);
+  const setIssuerInfo = useIssuerInfoStore(({ set }) => set);
 
   const handleUpload = async () => {
     console.log("Uploading URLScreen:", url);
     try {
       setReceivingState(true);
-      await receiveAllOfferedOpenId4VcCredentialWithAgent(agent.agent, url);
+      const [resolvedOffer, credentialResponses] =
+        await resolveAndGetCredentialsWithAgent(agentContext.agent, url);
+      if (credentialResponses.length < 1)
+        throw new Error("No credentials were received.");
+
+      if (credentialResponses.length > 1)
+        throw new Error("Handling of multiple credentials is not implemented");
+
+      const issuerName = await storeIssuerNameFromOfferWithAgent(
+        agentContext.agent,
+        resolvedOffer,
+        credentialResponses[0].credential.credential.issuerId,
+      );
+
+      await queryClient.invalidateQueries({
+        queryKey: ["issuerNames"],
+      });
+      setCredentialResponses(credentialResponses);
+      if (issuerName) setIssuerInfo(issuerName);
       setUrl("");
       setReceivingState(false);
-      router.push("/Received");
+      router.push("/DeclineAcceptScreen");
     } catch (e) {
       setReceivingState(false);
       setUrl("");
