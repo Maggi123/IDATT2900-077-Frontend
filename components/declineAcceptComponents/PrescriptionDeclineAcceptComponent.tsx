@@ -11,7 +11,7 @@ export default function PrescriptionDeclineAcceptComponent(
   props: PrescriptionDeclineAcceptComponentProps,
 ) {
   return (
-    <View style={addPrescriptionStyles.overlay}>
+    <View style={styles.overlay}>
       <Text style={addPrescriptionStyles.headerText}>New prescription</Text>
       <Text style={addPrescriptionStyles.overlayText}>
         Check if prescription information is correct, and decline or accept the
@@ -50,5 +50,10 @@ const styles = StyleSheet.create({
   overlaySectionText: {
     ...addPrescriptionStyles.overlayText,
     marginTop: 0,
+  },
+  overlay: {
+    ...addPrescriptionStyles.overlay,
+    flex: 6,
+    overflow: "scroll",
   },
 });
