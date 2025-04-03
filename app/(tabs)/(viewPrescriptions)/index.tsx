@@ -1,4 +1,4 @@
-import { W3cCredentialSubject } from "@credo-ts/core";
+import { W3cCredentialSubject, asArray } from "@credo-ts/core";
 import { useAgent } from "@credo-ts/react-hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
@@ -77,12 +77,9 @@ export default function ViewPrescriptions() {
       <SectionList
         style={styles.list}
         sections={prescriptions.data.map((credential) => {
-          const data: W3cCredentialSubject[] = [];
-          if (credential.credential.credentialSubject instanceof Array) {
-            data.concat(credential.credential.credentialSubject);
-          } else {
-            data.push(credential.credential.credentialSubject);
-          }
+          const data: W3cCredentialSubject[] = asArray(
+            credential.credential.credentialSubject,
+          );
           return {
             title: credential,
             data,
@@ -138,6 +135,16 @@ export default function ViewPrescriptions() {
               <Text style={styles.detailTitle}>Added: </Text>
               <Text style={styles.detail}>
                 {section.title.createdAt.toLocaleDateString()}
+              </Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailTitle}>Expires: </Text>
+              <Text style={styles.detail}>
+                {section.title.credential.expirationDate
+                  ? new Date(
+                      section.title.credential.expirationDate,
+                    ).toLocaleDateString()
+                  : "N/A"}
               </Text>
             </View>
           </View>
