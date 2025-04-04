@@ -5,7 +5,11 @@ import { Colors } from "@/constants/Colors";
 export default function LoadingComponent() {
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color={Colors.text} />
+      <ActivityIndicator
+        testID="loading-indicator"
+        size="large"
+        color={Colors.text}
+      />
     </View>
   );
 }
