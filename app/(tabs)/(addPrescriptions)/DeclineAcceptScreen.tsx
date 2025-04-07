@@ -86,6 +86,9 @@ export default function DeclineAcceptScreen() {
       <Text style={styles.containerText}>Document:</Text>
       <PrescriptionDeclineAcceptComponent
         newPrescriptionDescription={newPrescriptionDescription}
+        expirationDate={
+          new Date(credentialResponses[0].credential.credential.expirationDate)
+        }
       />
       <View style={styles.buttonContainer}>
         <Pressable style={buttonStyles.declineButton} onPress={handleDecline}>
@@ -107,7 +110,7 @@ const styles = StyleSheet.create({
     color: "black",
   },
   buttonContainer: {
-    flex: 0.55,
+    flex: 1,
     flexDirection: "row",
     width: "100%",
     padding: 10,
