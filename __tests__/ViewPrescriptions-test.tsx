@@ -42,7 +42,7 @@ const mockIssuerNames = {
   "issuer-1": "Trusted Health Org",
 };
 
-describe("ViewPrescriptions Component", () => {
+describe("ViewPrescriptions Screen", () => {
   beforeEach(() => {
     (useQuery as jest.Mock).mockImplementation(({ queryKey }) => {
       if (queryKey[0] === "prescription") {
@@ -53,7 +53,7 @@ describe("ViewPrescriptions Component", () => {
     });
   });
 
-  test("renders all prescription data correctly", async () => {
+  test("should render prescription name, issuer, and dates correctly", async () => {
     const { getByText, getAllByText } = render(<ViewPrescriptions />);
 
     const nameMatches = getAllByText("Paracetamol");
@@ -65,19 +65,21 @@ describe("ViewPrescriptions Component", () => {
     });
   });
 
-  test("disables buttons when no items selected", async () => {
+  test("should disable the download and share buttons when no prescription is selected", async () => {
     const { getByRole } = render(<ViewPrescriptions />);
 
     const downloadBtn = getByRole("button", { name: "Download" });
     const shareBtn = getByRole("button", { name: "Share" });
+
     await waitFor(() => {
       expect(downloadBtn?.props.accessibilityState?.disabled).toBe(true);
       expect(shareBtn?.props.accessibilityState?.disabled).toBe(true);
     });
   });
 
-  test("allows selection and enables buttons", async () => {
+  test("should enable the download and share buttons when prescriptions are selected", async () => {
     const { getAllByRole, getByRole } = render(<ViewPrescriptions />);
+
     const checkboxes = getAllByRole("checkbox");
     fireEvent.press(checkboxes[0]);
 
@@ -89,8 +91,8 @@ describe("ViewPrescriptions Component", () => {
   });
 });
 
-describe("ViewPrescriptions errors", () => {
-  test("Loading component shows when prescriptions are pending", async () => {
+describe("ViewPrescriptions error handling", () => {
+  test("should display loading indicator when prescriptions data is loading", async () => {
     (useQuery as jest.Mock).mockImplementation(({ queryKey }) => {
       if (queryKey[0] === "prescription") {
         return { data: null, isSuccess: false, isPending: true }; // Simulate loading state
@@ -103,10 +105,11 @@ describe("ViewPrescriptions errors", () => {
 
     expect(screen.getByTestId("loading-indicator")).toBeTruthy();
   });
-  test("displays error message when prescription data fetch fails", async () => {
+
+  test("should display error message when prescriptions data fetch fails", async () => {
     (useQuery as jest.Mock).mockImplementation(({ queryKey }) => {
       if (queryKey[0] === "prescription") {
-        return { data: null, isSuccess: false, isPending: false };
+        return { data: null, isSuccess: false, isPending: false }; // Simulate error state
       } else if (queryKey[0] === "issuerNames") {
         return { data: mockIssuerNames, isSuccess: true, isPending: false };
       }
@@ -117,3 +120,4 @@ describe("ViewPrescriptions errors", () => {
     expect(getByText("Something went wrong fetching data.")).toBeTruthy();
   });
 });
+

@@ -20,7 +20,7 @@ const mockPush = jest.fn();
 (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
 
 describe("HomeScreen", () => {
-  test("renders the LoadingComponent while waiting for did", async () => {
+  test("should render the LoadingComponent while waiting for DID", async () => {
     (useQuery as jest.Mock).mockReturnValue({ isPending: true });
 
     render(<HomeScreen />);
@@ -28,7 +28,7 @@ describe("HomeScreen", () => {
     expect(screen.getByTestId("loading-indicator")).toBeTruthy();
   });
 
-  test("renders the DID and buttons after data loads", async () => {
+  test("should render the DID and buttons after data is loaded", async () => {
     (useQuery as jest.Mock).mockReturnValue({
       isPending: false,
       data: "did:indy:123",
@@ -41,7 +41,7 @@ describe("HomeScreen", () => {
     expect(screen.getByText("View prescriptions")).toBeTruthy();
   });
 
-  test("navigates to addPrescriptions when 'Add prescriptions' is pressed", async () => {
+  test("should navigate to addPrescriptions screen when 'Add prescriptions' button is pressed", async () => {
     (useQuery as jest.Mock).mockReturnValue({
       isPending: false,
       data: "did:indy:123",
@@ -57,7 +57,7 @@ describe("HomeScreen", () => {
     });
   });
 
-  test("navigates to viewPrescriptions when 'View prescriptions' is pressed", async () => {
+  test("should navigate to viewPrescriptions screen when 'View prescriptions' button is pressed", async () => {
     (useQuery as jest.Mock).mockReturnValue({
       isPending: false,
       data: "did:indy:123",
@@ -73,7 +73,7 @@ describe("HomeScreen", () => {
     });
   });
 
-  test("handles empty dids array", async () => {
+  test("should display an error when the DID array is empty", async () => {
     (useQuery as jest.Mock).mockReturnValue({
       isError: true,
       isPending: false,

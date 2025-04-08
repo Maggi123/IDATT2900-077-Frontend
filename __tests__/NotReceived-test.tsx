@@ -17,15 +17,16 @@ describe("Not Received", () => {
     jest.clearAllMocks();
   });
 
-  test("renders the message and button", () => {
+  test("should render the error message and button", () => {
     const { getByText } = render(<NotReceived />);
 
     expect(
       getByText("An error occurred while receiving document(s)"),
     ).toBeTruthy();
+    expect(getByText("Ok")).toBeTruthy();
   });
 
-  test("navigates to the addPrescriptions screen when the 'Ok' button is pressed", async () => {
+  test("should navigate to the addPrescriptions screen when the 'Ok' button is pressed", async () => {
     const { getByText } = render(<NotReceived />);
 
     fireEvent.press(getByText("Ok"));

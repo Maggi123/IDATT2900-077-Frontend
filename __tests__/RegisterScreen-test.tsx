@@ -65,48 +65,50 @@ const setupAndPressRegister = async (user: any, error: any = null) => {
   return { consoleErrorSpy };
 };
 
-test("should call authorize and navigate when user presses register", async () => {
-  await setupAndPressRegister({ sub: "12345" });
+describe("RegisterScreen", () => {
+  test("should call authorize and navigate when user presses register", async () => {
+    await setupAndPressRegister({ sub: "12345" });
 
-  await waitFor(() => {
-    expect(mockAuthorize).toHaveBeenCalledTimes(1);
-    expect(mockPush).toHaveBeenCalledWith("/HomeScreen");
-    expect(SecureStore.setItemAsync).toHaveBeenCalledWith("registered", "1");
+    await waitFor(() => {
+      expect(mockAuthorize).toHaveBeenCalledTimes(1);
+      expect(mockPush).toHaveBeenCalledWith("/HomeScreen");
+      expect(SecureStore.setItemAsync).toHaveBeenCalledWith("registered", "1");
+    });
   });
-});
 
-test("should throw an error when user has no sub", async () => {
-  const { consoleErrorSpy } = await setupAndPressRegister({ sub: undefined });
+  test("should throw an error when user has no sub", async () => {
+    const { consoleErrorSpy } = await setupAndPressRegister({ sub: undefined });
 
-  await waitFor(() => {
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      Error(
-        "User did not authenticate with OpenID account during registering.",
-      ),
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        Error(
+          "User did not authenticate with OpenID account during registering.",
+        ),
+      );
+    });
+  });
+
+  test("should log error if authorization fails", async () => {
+    const mockError = new Error("Authorization failed");
+    const { consoleErrorSpy } = await setupAndPressRegister(
+      { sub: "12345" },
+      mockError,
     );
+
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalled();
+    });
   });
-});
 
-test("should log error if authorization fails", async () => {
-  const mockError = new Error("Authorization failed");
-  const { consoleErrorSpy } = await setupAndPressRegister(
-    { sub: "12345" },
-    mockError,
-  );
+  test("should throw an error if an error is present during registration", async () => {
+    const mockAuthError = new Error("Authentication failed");
+    const { consoleErrorSpy } = await setupAndPressRegister(
+      { sub: "12345" },
+      mockAuthError,
+    );
 
-  await waitFor(() => {
-    expect(consoleErrorSpy).toHaveBeenCalled();
-  });
-});
-
-test("should throw an error if an error is present during registration", async () => {
-  const mockAuthError = new Error("Authentication failed");
-  const { consoleErrorSpy } = await setupAndPressRegister(
-    { sub: "12345" },
-    mockAuthError,
-  );
-
-  await waitFor(() => {
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalled();
+    });
   });
 });

@@ -17,14 +17,15 @@ describe("Received", () => {
     jest.clearAllMocks();
   });
 
-  test("renders the message and button", () => {
+  test("should render the message and button", () => {
     const { getByText } = render(<Received />);
 
     expect(getByText("Document added")).toBeTruthy();
     expect(getByText("You successfully received the document(s)")).toBeTruthy();
+    expect(getByText("View")).toBeTruthy();
   });
 
-  test("navigates to the viewPrescriptions screen when the 'When' button is pressed", async () => {
+  test("should navigate to the viewPrescriptions screen when the 'When' button is pressed", async () => {
     const { getByText } = render(<Received />);
 
     fireEvent.press(getByText("View"));

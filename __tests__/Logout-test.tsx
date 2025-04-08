@@ -26,18 +26,20 @@ describe("Logout", () => {
     (useAuth0 as jest.Mock).mockReturnValue({ clearSession: mockClearSession });
   });
 
-  test("calls clearSession and navigates to home when log out button is pressed", async () => {
-    render(<Logout />);
+  describe("Given the user is logged in", () => {
+    test("should call clearSession and navigate to home when the log out button is pressed", async () => {
+      render(<Logout />);
 
-    const button = screen.getByText("Log out");
-    fireEvent.press(button);
+      const button = screen.getByText("Log out");
+      fireEvent.press(button);
 
-    await waitFor(() => {
-      expect(mockClearSession).toHaveBeenCalled();
-    });
+      await waitFor(() => {
+        expect(mockClearSession).toHaveBeenCalled();
+      });
 
-    await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith("/");
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith("/");
+      });
     });
   });
 });

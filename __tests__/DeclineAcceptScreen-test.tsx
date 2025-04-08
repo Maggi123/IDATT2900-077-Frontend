@@ -55,7 +55,6 @@ describe("DeclineAcceptScreen", () => {
     });
     (useQueryClient as jest.Mock).mockReturnValue(mockQueryClient);
 
-    // Mock clear functions
     mockClearCredentialResponses = jest.fn();
     mockClearIssuerInfo = jest.fn();
 
@@ -91,7 +90,7 @@ describe("DeclineAcceptScreen", () => {
           return name;
         }
         if (selector({ clear: mockClearIssuerInfo }) === mockClearIssuerInfo) {
-          return mockClearIssuerInfo; // Return the issuer info clear function
+          return mockClearIssuerInfo;
         }
       },
     );
@@ -99,20 +98,22 @@ describe("DeclineAcceptScreen", () => {
     (storeCredentialsWithAgent as jest.Mock).mockResolvedValue(true);
   });
 
-  it("renders the screen correctly with issuer", () => {
+  test("should render the screen correctly with issuer", async () => {
     const { getByText } = render(<DeclineAcceptScreen />);
 
-    expect(getByText("Issuer:")).toBeTruthy();
-    expect(getByText("Mock Issuer")).toBeTruthy();
+    await waitFor(() => {
+      expect(getByText("Issuer:")).toBeTruthy();
+      expect(getByText("Mock Issuer")).toBeTruthy();
+    });
   });
 
-  it("navigates back when the Decline button is pressed", () => {
+  test("should navigate back when the Decline button is pressed", () => {
     const { getByText } = render(<DeclineAcceptScreen />);
     fireEvent.press(getByText("Decline"));
     expect(mockRouter.back).toHaveBeenCalled();
   });
 
-  it("stores credentials and navigates when the Accept button is pressed", async () => {
+  test("should store credentials and navigate when the Accept button is pressed", async () => {
     const { getByText } = render(<DeclineAcceptScreen />);
     fireEvent.press(getByText("Accept"));
 
@@ -126,14 +127,16 @@ describe("DeclineAcceptScreen", () => {
     expect(mockRouter.push).toHaveBeenCalledWith("/Received");
   });
 
-  it("shows loading screen when there are no credential responses", () => {
-    (useCredentialResponsesStore as unknown as jest.Mock).mockReturnValueOnce([]);
+  test("should show loading screen when there are no credential responses", () => {
+    (useCredentialResponsesStore as unknown as jest.Mock).mockReturnValueOnce(
+      [],
+    );
 
     const { getByTestId } = render(<DeclineAcceptScreen />);
     expect(getByTestId("loading-indicator")).toBeTruthy();
   });
 
-  it("redirects to NotReceived if credential has no subject information", () => {
+  test("should redirect to NotReceived if credential has no subject information", () => {
     (useCredentialResponsesStore as unknown as jest.Mock).mockReturnValueOnce([
       {
         credential: {
@@ -148,7 +151,7 @@ describe("DeclineAcceptScreen", () => {
     expect(Redirect).toHaveBeenCalledWith({ href: "/NotReceived" }, {});
   });
 
-  it("calls clearCredentialResponses and clearIssuerInfo when the Decline button is pressed", () => {
+  test("should call clearCredentialResponses and clearIssuerInfo when the Decline button is pressed", () => {
     const { getByText } = render(<DeclineAcceptScreen />);
 
     fireEvent.press(getByText("Decline"));

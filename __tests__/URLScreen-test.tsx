@@ -57,20 +57,20 @@ describe("URLScreen", () => {
     jest.clearAllMocks();
   });
 
-  test("renders input and upload button", () => {
+  test("should render input and upload button", () => {
     const { getByPlaceholderText, getByText } = render(<URLScreen />);
     expect(getByPlaceholderText("https://example.com")).toBeTruthy();
     expect(getByText("Upload")).toBeTruthy();
   });
 
-  it("updates input text correctly", () => {
+  test("should update input text correctly", () => {
     const { getByPlaceholderText } = render(<URLScreen />);
     const input = getByPlaceholderText("https://example.com");
     fireEvent.changeText(input, "https://my-link.com");
     expect(input.props.value).toBe("https://my-link.com");
   });
 
-  test("navigates to DeclineAcceptScreen when upload succeeds", async () => {
+  test("should navigate to DeclineAcceptScreen when upload succeeds", async () => {
     (resolveAndGetCredentialsWithAgent as jest.Mock).mockResolvedValue([
       { resolved: true },
       [
@@ -98,7 +98,7 @@ describe("URLScreen", () => {
     });
   });
 
-  test("navigates to NotReceived when no credentials were received", async () => {
+  test("should navigate to NotReceived when no credentials were received", async () => {
     (resolveAndGetCredentialsWithAgent as jest.Mock).mockResolvedValue([
       { resolved: true },
       [],
@@ -110,7 +110,7 @@ describe("URLScreen", () => {
     );
   });
 
-  test("shows loading state while uploading", () => {
+  test("should show loading state while uploading", () => {
     (resolveAndGetCredentialsWithAgent as jest.Mock).mockImplementation(
       () => new Promise(() => {}),
     );
@@ -128,7 +128,7 @@ describe("URLScreen", () => {
     expect(queryByTestId("loading-indicator")).toBeTruthy();
   });
 
-  test("navigates to NotReceived when multiple credentials are received", async () => {
+  test("should navigate to NotReceived when multiple credentials are received", async () => {
     (resolveAndGetCredentialsWithAgent as jest.Mock).mockResolvedValue([
       { resolved: true },
       [

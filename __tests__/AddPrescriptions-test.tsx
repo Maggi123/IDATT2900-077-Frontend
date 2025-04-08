@@ -7,13 +7,13 @@ import {
 import { useRouter } from "expo-router";
 import React from "react";
 
-import AddPrescriptions from "../app/(tabs)/(addPrescriptions)/index"; // Adjust the path if needed
+import AddPrescriptions from "../app/(tabs)/(addPrescriptions)/index";
 
 jest.mock("expo-router", () => ({
   useRouter: jest.fn(),
 }));
 
-describe("AddPrescriptions Component", () => {
+describe("AddPrescriptions Screen", () => {
   let mockPush: jest.Mock;
 
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe("AddPrescriptions Component", () => {
     (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
   });
 
-  test("renders all buttons correctly", async () => {
+  test("should display all action buttons", async () => {
     render(<AddPrescriptions />);
     await waitFor(() => {
       expect(screen.getByText("Scan QR code")).toBeTruthy();
@@ -30,7 +30,7 @@ describe("AddPrescriptions Component", () => {
     });
   });
 
-  test("navigates to the correct screen when buttons are pressed", async () => {
+  test("should navigate to the QR code screen when the 'Scan QR code' button is pressed", async () => {
     render(<AddPrescriptions />);
 
     const scanQRCodeButton = screen.getByText("Scan QR code");
@@ -39,6 +39,10 @@ describe("AddPrescriptions Component", () => {
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith("/QRCodeScreen");
     });
+  });
+
+  test("should navigate to the URL input screen when the 'Input URL' button is pressed", async () => {
+    render(<AddPrescriptions />);
 
     const inputURLButton = screen.getByText("Input URL");
     fireEvent.press(inputURLButton);
@@ -46,6 +50,10 @@ describe("AddPrescriptions Component", () => {
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith("/URLScreen");
     });
+  });
+
+  test("should navigate to the document upload screen when the 'Upload document' button is pressed", async () => {
+    render(<AddPrescriptions />);
 
     const uploadDocumentButton = screen.getByText("Upload document");
     fireEvent.press(uploadDocumentButton);
