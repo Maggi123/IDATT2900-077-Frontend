@@ -1,3 +1,4 @@
+import { useAgent } from "@credo-ts/react-hooks";
 import { useQuery } from "@tanstack/react-query";
 import {
   render,
@@ -8,6 +9,7 @@ import {
 import { useRouter } from "expo-router";
 
 import HomeScreen from "@/app/(tabs)/HomeScreen";
+import { Colors } from "@/constants/Colors";
 
 jest.mock("expo-router", () => ({ useRouter: jest.fn() }));
 jest.mock("@tanstack/react-query", () => ({ useQuery: jest.fn() }));
@@ -16,10 +18,27 @@ jest.mock("@credo-ts/react-hooks", () => ({
   useAgent: jest.fn(),
 }));
 
+jest.mock("@expo/vector-icons", () => ({
+  MaterialCommunityIcons: () => "Icon",
+}));
+
 const mockPush = jest.fn();
 (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
 
+const mockAgent = {
+  agent: {
+    dids: {
+      getCreatedDids: jest.fn().mockResolvedValue([{ did: "did:indy:123" }]),
+    },
+  },
+};
+(useAgent as jest.Mock).mockReturnValue(mockAgent);
+
 describe("HomeScreen", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   test("should render the LoadingComponent while waiting for DID", async () => {
     (useQuery as jest.Mock).mockReturnValue({ isPending: true });
 
@@ -73,15 +92,62 @@ describe("HomeScreen", () => {
     });
   });
 
-  test("should display an error when the DID array is empty", async () => {
-    (useQuery as jest.Mock).mockReturnValue({
-      isError: true,
-      isPending: false,
-      data: null,
+  test("should call getCreatedDids with correct parameters", async () => {
+    // Capture the queryFn passed to useQuery
+    let capturedQueryFn: any;
+    (useQuery as jest.Mock).mockImplementation(({ queryFn }) => {
+      capturedQueryFn = queryFn;
+      return {
+        isPending: false,
+        data: "did:indy:123",
+      };
     });
 
     render(<HomeScreen />);
 
-    expect(await screen.findByText("󰐙")).toBeTruthy();
+    await capturedQueryFn();
+
+    expect(mockAgent.agent.dids.getCreatedDids).toHaveBeenCalledWith({
+      method: "indy",
+    });
+  });
+
+  test("should extract the first DID from the returned array", async () => {
+    mockAgent.agent.dids.getCreatedDids.mockResolvedValueOnce([
+      { did: "did:indy:first" },
+      { did: "did:indy:second" },
+    ]);
+
+    let capturedQueryFn: any;
+    (useQuery as jest.Mock).mockImplementation(({ queryFn }) => {
+      capturedQueryFn = queryFn;
+      return {
+        isPending: false,
+        data: "did:indy:first",
+      };
+    });
+
+    render(<HomeScreen />);
+
+    const result = await capturedQueryFn();
+    expect(result).toBe("did:indy:first");
+  });
+
+  test("should handle empty DID response gracefully", async () => {
+    mockAgent.agent.dids.getCreatedDids.mockResolvedValueOnce([]);
+
+    let capturedQueryFn: any;
+    (useQuery as jest.Mock).mockImplementation(({ queryFn }) => {
+      capturedQueryFn = queryFn;
+      return {
+        isPending: false,
+        isError: true,
+        error: new Error("No DIDs found"),
+      };
+    });
+
+    render(<HomeScreen />);
+
+    await expect(capturedQueryFn()).rejects.toThrow();
   });
 });
