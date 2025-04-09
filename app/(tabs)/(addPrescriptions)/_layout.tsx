@@ -3,6 +3,7 @@ import { Stack, useRouter } from "expo-router";
 
 import { Pressable } from "react-native";
 import { Colors } from "@/constants/Colors";
+import { headerStyles } from "@/stylesheets/HeaderStyles";
 
 export default function AddPrescriptionsLayout() {
   const router = useRouter();
@@ -10,11 +11,7 @@ export default function AddPrescriptionsLayout() {
   return (
     <Stack
       screenOptions={{
-        headerStyle: {
-          backgroundColor: Colors.bar,
-        },
-        headerTintColor: Colors.lightpink,
-        headerTitleAlign: "center",
+        ...headerStyles,
         headerLeft: () => (
           <Pressable
             onPress={() => {
