@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
-
 import { Pressable } from "react-native";
+
 import { Colors } from "@/constants/Colors";
 import { headerStyles } from "@/stylesheets/HeaderStyles";
 

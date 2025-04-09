@@ -1,6 +1,7 @@
 import { CameraView, useCameraPermissions } from "expo-camera/next";
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
+
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 interface QRCodeScannerProps {
@@ -32,8 +33,13 @@ const QRCodeScannerComponent: React.FC<QRCodeScannerProps> = ({ onScan }) => {
       </View>
 
       {!isPermissionGranted ? (
-        <Pressable style={defaultStyles.uploadButton} onPress={requestPermission}>
-          <Text style={defaultStyles.uploadButtonText}>Grant Camera Permission</Text>
+        <Pressable
+          style={defaultStyles.uploadButton}
+          onPress={requestPermission}
+        >
+          <Text style={defaultStyles.uploadButtonText}>
+            Grant Camera Permission
+          </Text>
         </Pressable>
       ) : (
         <CameraView
@@ -45,9 +51,7 @@ const QRCodeScannerComponent: React.FC<QRCodeScannerProps> = ({ onScan }) => {
           }}
         />
       )}
-      {scannedData && (
-        <Text>Scanned: {scannedData}</Text>
-      )}
+      {scannedData && <Text>Scanned: {scannedData}</Text>}
     </View>
   );
 };
