@@ -88,6 +88,13 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+          name="(sharePrescriptions)"
+          options={{
+            href: null,
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
           name="Logout"
           options={{
             tabBarButton: (props) => (

@@ -6,6 +6,7 @@ import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
 import LoadingComponent from "@/components/LoadingComponent";
 import { Colors } from "@/constants/Colors";
+import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -24,6 +25,8 @@ export default function HomeScreen() {
       router.push("/(tabs)/(addPrescriptions)");
     } else if (button === "Button 2") {
       router.push("/(tabs)/(viewPrescriptions)");
+    } else if (button === "Button 3") {
+      router.push("/(tabs)/(sharePrescriptions)");
     }
   };
 
@@ -62,16 +65,29 @@ export default function HomeScreen() {
           <Text style={styles.buttonText}>View prescriptions</Text>
         </View>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          handleButtonPress("Button 3");
+        }}
+      >
+        <View style={styles.buttonContent}>
+          <MaterialCommunityIcons
+            name="share-variant-outline"
+            size={40}
+            color={Colors.lightpink}
+          />
+          <Text style={styles.buttonText}>Share prescriptions</Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    ...defaultStyles.container,
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: Colors.background,
     gap: 20,
   },
   button: {
