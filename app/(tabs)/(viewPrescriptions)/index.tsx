@@ -17,12 +17,56 @@ export default function ViewPrescriptions() {
     [],
   );
 
+  const prescriptions = useQuery({
+    queryKey: ["prescription"],
+    queryFn: () =>
+      agentContext.agent.w3cCredentials
+        .getAllCredentialRecords()
+        .then((prescriptions) => {
+          return prescriptions;
+        }),
+  });
+
+  const issuerNames = useQuery({
+    queryKey: ["issuerNames"],
+    queryFn: () =>
+      agentContext.agent.genericRecords.getAll().then((records) => {
+        const issuerNames: Record<string, unknown> = {};
+        for (const record of records) {
+          issuerNames[record.id] = record.content.name;
+        }
+        return issuerNames;
+      }),
+  });
+
+  if (prescriptions.isPending || issuerNames.isPending)
+    return <LoadingComponent />;
+
+  if (
+    !prescriptions.isSuccess ||
+    !issuerNames.isSuccess ||
+    prescriptions.error ||
+    issuerNames.error
+  )
+    return (
+      <View style={defaultStyles.container}>
+        <Text style={defaultStyles.title}>
+          Something went wrong fetching data.
+        </Text>
+      </View>
+    );
+
   const toggleSelection = (id: string) => {
     setSelectedPrescriptions((prevSelected) =>
       prevSelected.includes(id)
         ? prevSelected.filter((item) => item !== id)
         : [...prevSelected, id],
     );
+  };
+
+  const handleShare = () => {
+    console.log("Sharing:", selectedPrescriptions);
+    // Implement actual share logic here
   };
 
   const generateHtmlFromPrescriptions = (prescriptionsData: any[]) => {
@@ -99,50 +143,6 @@ export default function ViewPrescriptions() {
       alert("Something went wrong while creating the PDF.");
     }
   };
-
-  const handleShare = () => {
-    console.log("Sharing:", selectedPrescriptions);
-    // Implement actual share logic here
-  };
-
-  const prescriptions = useQuery({
-    queryKey: ["prescription"],
-    queryFn: () =>
-      agentContext.agent.w3cCredentials
-        .getAllCredentialRecords()
-        .then((prescriptions) => {
-          return prescriptions;
-        }),
-  });
-
-  const issuerNames = useQuery({
-    queryKey: ["issuerNames"],
-    queryFn: () =>
-      agentContext.agent.genericRecords.getAll().then((records) => {
-        const issuerNames: Record<string, unknown> = {};
-        for (const record of records) {
-          issuerNames[record.id] = record.content.name;
-        }
-        return issuerNames;
-      }),
-  });
-
-  if (prescriptions.isPending || issuerNames.isPending)
-    return <LoadingComponent />;
-
-  if (
-    !prescriptions.isSuccess ||
-    !issuerNames.isSuccess ||
-    prescriptions.error ||
-    issuerNames.error
-  )
-    return (
-      <View style={defaultStyles.container}>
-        <Text style={defaultStyles.title}>
-          Something went wrong fetching data.
-        </Text>
-      </View>
-    );
 
   return (
     <View style={defaultStyles.container}>

@@ -1,24 +1,32 @@
-import { W3cCredentialSubject } from "@credo-ts/core";
+import {
+  W3cCredentialSubject,
+  W3cCredentialRecord,
+  asArray,
+} from "@credo-ts/core";
 import { Text, View, StyleSheet, SectionList, Pressable } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 
+type PrescriptionListProps = {
+  prescriptions: W3cCredentialRecord[];
+  issuerNames: Record<string, unknown>;
+  selectedPrescriptions: string[];
+  onToggleSelection: Function;
+};
+
 const PrescriptionList = ({
-                            prescriptions,
-                            issuerNames,
-                            selectedPrescriptions,
-                            onToggleSelection,
-                          }) => {
+  prescriptions,
+  issuerNames,
+  selectedPrescriptions,
+  onToggleSelection,
+}: PrescriptionListProps) => {
   return (
     <SectionList
       style={styles.list}
       sections={prescriptions.map((credential) => {
-        const data: W3cCredentialSubject[] = [];
-        if (credential.credential.credentialSubject instanceof Array) {
-          data.concat(credential.credential.credentialSubject);
-        } else {
-          data.push(credential.credential.credentialSubject);
-        }
+        const data: W3cCredentialSubject[] = asArray(
+          credential.credential.credentialSubject,
+        );
         return {
           title: credential,
           data,
@@ -29,7 +37,7 @@ const PrescriptionList = ({
         <View style={styles.prescriptionBox}>
           <View style={styles.topRow}>
             <Text style={styles.issuer}>
-              {issuerNames[section.title.credential.issuerId] ??
+              {(issuerNames[section.title.credential.issuerId] as string) ??
                 section.title.credential.issuerId}
             </Text>
             <Pressable
@@ -37,19 +45,19 @@ const PrescriptionList = ({
               style={[
                 styles.checkbox,
                 selectedPrescriptions.includes(JSON.stringify(item)) &&
-                styles.checked,
+                  styles.checked,
               ]}
               accessibilityRole="checkbox"
             />
           </View>
           <Text style={styles.name}>
-            {item.claims ? (item.claims.name) : "N/A"}
+            {item.claims ? (item.claims.name as string) : "N/A"}
           </Text>
           <View style={styles.detailRow}>
             <Text style={styles.detailTitle}>Active ingredient: </Text>
             <Text style={styles.detail}>
               {item.claims
-                ? (item.claims.activeIngredient ?? "N/A")
+                ? ((item.claims.activeIngredient as string) ?? "N/A")
                 : "N/A"}
             </Text>
           </View>
@@ -57,7 +65,9 @@ const PrescriptionList = ({
             <Text style={styles.detailTitle}>Authored: </Text>
             <Text style={styles.detail}>
               {item.claims
-                ? new Date(item.claims.authoredOn).toLocaleDateString()
+                ? new Date(
+                    item.claims.authoredOn as string,
+                  ).toLocaleDateString()
                 : "N/A"}
             </Text>
           </View>
