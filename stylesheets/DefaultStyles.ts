@@ -47,6 +47,7 @@ export const defaultStyles = StyleSheet.create({
   },
   uploadButton: {
     paddingVertical: 12,
+    paddingHorizontal: 8,
     backgroundColor: Colors.button,
     borderRadius: 8,
     alignItems: "center",
@@ -56,5 +57,23 @@ export const defaultStyles = StyleSheet.create({
   uploadButtonText: {
     color: Colors.lightpink,
     fontWeight: "bold",
+  },
+  optionButton: {
+    width: "90%",
+    backgroundColor: Colors.lightpink,
+    paddingVertical: 12,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  optionButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  optionButtonText: {
+    color: Colors.lightpurple,
+    fontSize: 20,
   },
 });
