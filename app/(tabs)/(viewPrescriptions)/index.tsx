@@ -1,3 +1,4 @@
+import { asArray } from "@credo-ts/core";
 import { useAgent } from "@credo-ts/react-hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
@@ -111,7 +112,7 @@ export default function ViewPrescriptions() {
       const selectedData = prescriptions.data.flatMap((credential) => {
         const subject = credential.credential.credentialSubject;
         console.log(subject);
-        const data = Array.isArray(subject) ? subject : [subject];
+        const data = asArray(subject);
         return data
           .filter((item) => {
             const itemId = JSON.stringify(item);
