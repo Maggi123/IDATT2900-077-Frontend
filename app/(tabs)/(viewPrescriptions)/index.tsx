@@ -108,6 +108,7 @@ export default function ViewPrescriptions() {
                     JSON.stringify(section) + JSON.stringify(item),
                   ) && styles.checked,
                 ]}
+                accessibilityRole="checkbox"
               />
             </View>
             <Text style={styles.name}>
@@ -155,6 +156,7 @@ export default function ViewPrescriptions() {
           style={[styles.button]}
           onPress={handleDownload}
           disabled={selectedPrescriptions.length === 0}
+          accessibilityRole="button"
         >
           <MaterialCommunityIcons name="download" size={20} color="white" />
           <Text style={styles.buttonText}>Download</Text>
@@ -164,6 +166,7 @@ export default function ViewPrescriptions() {
           style={[styles.button]}
           onPress={handleShare}
           disabled={selectedPrescriptions.length === 0}
+          accessibilityRole="button"
         >
           <MaterialCommunityIcons
             name="share-variant"

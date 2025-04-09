@@ -20,9 +20,7 @@ export default function PrescriptionDeclineAcceptComponent(
       </Text>
       <Text style={styles.overlaySectionHeaderText}>Name: </Text>
       <Text style={styles.overlaySectionText}>
-        {props.newPrescriptionDescription
-          ? props.newPrescriptionDescription.name
-          : "N/A"}
+        {props.newPrescriptionDescription?.name ?? "N/A"}
       </Text>
       <Text style={styles.overlaySectionHeaderText}>Active ingredient:</Text>
       <Text style={styles.overlaySectionText}>
