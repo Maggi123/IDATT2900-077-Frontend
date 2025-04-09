@@ -14,7 +14,7 @@ import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function ViewPrescriptions() {
   const agentContext = useAgent();
-  const [selectedPrescriptions, setSelectedPrescriptions] = useState<string[]>(
+  const [selectedPrescriptions, setSelectedPrescriptions] = useState<number[]>(
     [],
   );
 
@@ -57,7 +57,7 @@ export default function ViewPrescriptions() {
       </View>
     );
 
-  const toggleSelection = (id: string) => {
+  const toggleSelection = (id: number) => {
     setSelectedPrescriptions((prevSelected) =>
       prevSelected.includes(id)
         ? prevSelected.filter((item) => item !== id)
@@ -109,14 +109,13 @@ export default function ViewPrescriptions() {
 
   const handleDownloadPdf = async () => {
     try {
-      const selectedData = prescriptions.data.flatMap((credential) => {
+      const selectedData = prescriptions.data.flatMap((credential, index) => {
         const subject = credential.credential.credentialSubject;
         console.log(subject);
         const data = asArray(subject);
         return data
-          .filter((item) => {
-            const itemId = JSON.stringify(item);
-            return selectedPrescriptions.includes(itemId);
+          .filter((_) => {
+            return selectedPrescriptions.includes(index);
           })
           .map((item) => ({
             issuer:

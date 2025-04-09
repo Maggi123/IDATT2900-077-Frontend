@@ -10,8 +10,8 @@ import { Colors } from "@/constants/Colors";
 type PrescriptionListProps = {
   prescriptions: W3cCredentialRecord[];
   issuerNames: Record<string, unknown>;
-  selectedPrescriptions: string[];
-  onToggleSelection: Function;
+  selectedPrescriptions: number[];
+  onToggleSelection: (id: number) => void;
 };
 
 const PrescriptionList = ({
@@ -23,12 +23,12 @@ const PrescriptionList = ({
   return (
     <SectionList
       style={styles.list}
-      sections={prescriptions.map((credential) => {
+      sections={prescriptions.map((credential, index) => {
         const data: W3cCredentialSubject[] = asArray(
           credential.credential.credentialSubject,
         );
         return {
-          title: credential,
+          title: index,
           data,
         };
       })}
@@ -37,15 +37,17 @@ const PrescriptionList = ({
         <View style={styles.prescriptionBox}>
           <View style={styles.topRow}>
             <Text style={styles.issuer}>
-              {(issuerNames[section.title.credential.issuerId] as string) ??
-                section.title.credential.issuerId}
+              {(issuerNames[
+                prescriptions[section.title].credential.issuerId
+              ] as string) ?? prescriptions[section.title].credential.issuerId}
             </Text>
             <Pressable
-              onPress={() => onToggleSelection(JSON.stringify(item))}
+              onPress={() => {
+                onToggleSelection(section.title);
+              }}
               style={[
                 styles.checkbox,
-                selectedPrescriptions.includes(JSON.stringify(item)) &&
-                  styles.checked,
+                selectedPrescriptions.includes(section.title) && styles.checked,
               ]}
               accessibilityRole="checkbox"
             />
@@ -74,7 +76,7 @@ const PrescriptionList = ({
           <View style={styles.detailRow}>
             <Text style={styles.detailTitle}>Added: </Text>
             <Text style={styles.detail}>
-              {section.title.createdAt.toLocaleDateString()}
+              {prescriptions[section.title].createdAt.toLocaleDateString()}
             </Text>
           </View>
         </View>
