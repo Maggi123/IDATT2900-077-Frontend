@@ -1,6 +1,7 @@
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 import { Colors } from "@/constants/Colors";
+import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function LoadingComponent() {
   return (
@@ -16,10 +17,8 @@ export default function LoadingComponent() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    ...defaultStyles.container,
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: Colors.background,
     gap: 20,
   },
 });

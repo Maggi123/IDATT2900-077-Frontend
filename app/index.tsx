@@ -3,7 +3,6 @@ import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 
-import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function Index() {
@@ -42,10 +41,8 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    ...defaultStyles.container,
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: Colors.background,
     gap: 10,
   },
 });
