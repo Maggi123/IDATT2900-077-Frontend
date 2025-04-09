@@ -1,8 +1,8 @@
-import { View, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
+import { View, StyleSheet } from "react-native";
 
-import { defaultStyles } from "@/stylesheets/DefaultStyles";
 import NavigationOptionButton from "@/components/NavigationOptionButton";
+import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function AddPrescriptions() {
   const router = useRouter();
@@ -12,17 +12,23 @@ export default function AddPrescriptions() {
       <NavigationOptionButton
         icon="qrcode-scan"
         text="Scan QR code"
-        onPress={() => router.push("/QRCodeScreen")}
+        onPress={() => {
+          router.push("/QRCodeScreen");
+        }}
       />
       <NavigationOptionButton
         icon="pencil-outline"
         text="Input URL"
-        onPress={() => router.push("/URLScreen")}
+        onPress={() => {
+          router.push("/URLScreen");
+        }}
       />
       <NavigationOptionButton
         icon="upload-outline"
         text="Upload document"
-        onPress={() => router.push("/UploadScreen")}
+        onPress={() => {
+          router.push("/UploadScreen");
+        }}
       />
     </View>
   );
