@@ -2,20 +2,20 @@ import { useAgent } from "@credo-ts/react-hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
+import { View, Text, Pressable } from "react-native";
 
 import {
   resolveAndGetCredentialsWithAgent,
   storeIssuerNameFromOfferWithAgent,
 } from "@/agent/Vc";
 import LoadingComponent from "@/components/LoadingComponent";
-import { Colors } from "@/constants/Colors";
+import URLInputComponent from "@/components/URLInputComponent";
 import { useCredentialResponsesStore } from "@/state/CredentialResponsesStore";
 import { useIssuerInfoStore } from "@/state/IssuerInfoStore";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function URLScreen() {
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState<string>("");
   const [receivingState, setReceivingState] = useState(false);
   const agentContext = useAgent();
   const router = useRouter();
@@ -62,29 +62,10 @@ export default function URLScreen() {
 
   return (
     <View style={defaultStyles.container}>
-      <View style={defaultStyles.overlay}>
-        <Text style={defaultStyles.overlayText}>Write URL here</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="https://example.com"
-          value={url}
-          onChangeText={setUrl}
-          keyboardType="url"
-          autoCapitalize="none"
-        />
-      </View>
+      <URLInputComponent url={url} onUrlChange={setUrl} />
       <Pressable style={defaultStyles.uploadButton} onPress={handleUpload}>
         <Text style={defaultStyles.uploadButtonText}>Upload</Text>
       </Pressable>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    backgroundColor: Colors.lightgray,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-  },
-});
