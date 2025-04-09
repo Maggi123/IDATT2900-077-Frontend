@@ -1,17 +1,11 @@
 import { Stack } from "expo-router";
 
-import { Colors } from "@/constants/Colors";
+import { headerStyles } from "@/stylesheets/HeaderStyles";
 
 export default function ViewPrescriptionsLayout() {
   return (
     <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: Colors.bar,
-        },
-        headerTintColor: Colors.lightpink,
-        headerTitleAlign: "center",
-      }}
+      screenOptions={headerStyles}
     />
   );
 }
