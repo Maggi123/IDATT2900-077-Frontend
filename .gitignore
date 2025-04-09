@@ -41,3 +41,6 @@ app-example
 
 # IDEA folder
 .idea
+
+# Test coverage folder
+coverage
