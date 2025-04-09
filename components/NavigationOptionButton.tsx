@@ -1,9 +1,9 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
-import React from "react";
 
 interface NavigationOptionButtonProps {
   icon: keyof typeof MaterialCommunityIcons.glyphMap;

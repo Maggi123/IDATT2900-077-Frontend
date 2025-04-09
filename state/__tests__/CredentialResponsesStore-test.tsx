@@ -1,5 +1,6 @@
-import { useCredentialResponsesStore } from "@/state/CredentialResponsesStore";
 import { OpenId4VciCredentialResponse } from "@credo-ts/openid4vc";
+
+import { useCredentialResponsesStore } from "@/state/CredentialResponsesStore";
 
 describe("CredentialResponsesStore", () => {
   it("should initialize with an empty credentialResponses array", () => {

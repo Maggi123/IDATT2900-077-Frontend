@@ -120,4 +120,3 @@ describe("ViewPrescriptions error handling", () => {
     expect(getByText("Something went wrong fetching data.")).toBeTruthy();
   });
 });
-

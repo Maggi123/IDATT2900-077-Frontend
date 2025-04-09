@@ -67,7 +67,5 @@ export default function QRCodeScreen() {
 
   if (receivingState) return <LoadingComponent />;
 
-  return (
-      <QRCodeScannerComponent onScan={setScannedData} />
-  );
+  return <QRCodeScannerComponent onScan={setScannedData} />;
 }

@@ -1,6 +1,7 @@
 // defaultStyles.ts
-import { Colors } from "@/constants/Colors";
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
+
+import { Colors } from "@/constants/Colors";
 
 export const headerStyles: NativeStackNavigationOptions = {
   headerStyle: {

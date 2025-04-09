@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, TextInput } from "react-native";
+
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
@@ -7,7 +8,10 @@ interface URLInputComponentProps {
   onUrlChange: (url: string) => void;
 }
 
-const URLInputComponent: React.FC<URLInputComponentProps> = ({ url, onUrlChange }) => {
+const URLInputComponent: React.FC<URLInputComponentProps> = ({
+  url,
+  onUrlChange,
+}) => {
   return (
     <View style={defaultStyles.overlay}>
       <Text style={defaultStyles.overlayText}>Write URL here</Text>
