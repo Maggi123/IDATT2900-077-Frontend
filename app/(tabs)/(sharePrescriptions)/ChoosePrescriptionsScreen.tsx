@@ -3,7 +3,7 @@ import { useAgent } from "@credo-ts/react-hooks";
 import { useQuery } from "@tanstack/react-query";
 import { Redirect } from "expo-router";
 import { useState } from "react";
-import { Text, View } from "react-native";
+import { Text, View, Pressable, StyleSheet } from "react-native";
 
 import LoadingComponent from "@/components/LoadingComponent";
 import PrescriptionList from "@/components/PrescriptionList";
@@ -95,7 +95,12 @@ export default function ChoosePrescriptionsScreen() {
   return (
     <View style={defaultStyles.container}>
       <View style={defaultStyles.overlay}>
-        <Text style={defaultStyles.overlayText}>Purpose:</Text>
+        <Text style={defaultStyles.overlayText}>
+          {
+            resolvedAuthorizationRequest?.presentationExchange
+              ?.credentialsForRequest.name
+          }
+        </Text>
         <Text style={defaultStyles.overlayText}>
           {
             resolvedAuthorizationRequest?.presentationExchange
@@ -109,6 +114,25 @@ export default function ChoosePrescriptionsScreen() {
         selectedPrescriptions={selectedPrescriptions}
         onToggleSelection={toggleSelection}
       />
+      <View style={defaultStyles.buttonContent}>
+        <Pressable style={styles.button}>
+          <View>
+            <Text style={defaultStyles.buttonText}>Cancel</Text>
+          </View>
+        </Pressable>
+        <Pressable style={styles.button}>
+          <View>
+            <Text style={defaultStyles.buttonText}>Share</Text>
+          </View>
+        </Pressable>
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    ...defaultStyles.button,
+    flex: 1,
+  },
+});
