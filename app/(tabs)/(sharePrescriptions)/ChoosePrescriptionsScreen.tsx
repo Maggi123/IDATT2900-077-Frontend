@@ -1,7 +1,12 @@
-import { ClaimFormat, W3cCredentialRecord } from "@credo-ts/core";
+import {
+  ClaimFormat,
+  DifPexInputDescriptorToCredentials,
+  W3cCredentialRecord,
+} from "@credo-ts/core";
 import { useAgent } from "@credo-ts/react-hooks";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
-import { Redirect } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import { useState } from "react";
 import { Text, View, Pressable, StyleSheet } from "react-native";
 
@@ -15,10 +20,13 @@ export default function ChoosePrescriptionsScreen() {
     [],
   );
   const agentContext = useAgent();
+  const router = useRouter();
 
   const resolvedAuthorizationRequest = useResolvedAuthorizationRequestStore(
     ({ resolvedAuthorizationRequest }) => resolvedAuthorizationRequest,
   );
+  const clearResolvedAuthorizationRequest =
+    useResolvedAuthorizationRequestStore(({ clear }) => clear);
 
   const issuerNames = useQuery({
     queryKey: ["issuerNames"],
@@ -38,6 +46,11 @@ export default function ChoosePrescriptionsScreen() {
         ? prevSelected.filter((item) => item !== id)
         : [...prevSelected, id],
     );
+  };
+
+  const handleCancel = () => {
+    clearResolvedAuthorizationRequest();
+    router.push("/(tabs)/(sharePrescriptions)");
   };
 
   if (issuerNames.isPending) return <LoadingComponent />;
@@ -68,11 +81,6 @@ export default function ChoosePrescriptionsScreen() {
     console.log("All prescription credentials are to be submitted");
   }
 
-  console.log(
-    resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest
-      .requirements[0].submissionEntry[0].inputDescriptorId,
-  );
-
   if (
     resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest
       .requirements[0].submissionEntry[0].inputDescriptorId !==
@@ -80,17 +88,50 @@ export default function ChoosePrescriptionsScreen() {
   )
     return <Redirect href="/(tabs)/(sharePrescriptions)" />;
 
-  const credentials =
+  const subMissionEntryCredentials =
     resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest
       .requirements[0].submissionEntry[0].verifiableCredentials;
 
-  const prescriptions = credentials
+  const w3cCredentialRecords = subMissionEntryCredentials
     .filter(
       (credential) =>
         credential.type === ClaimFormat.JwtVc ||
         credential.type === ClaimFormat.LdpVc,
     )
     .map((credential) => credential.credentialRecord);
+
+  const handleShare = async () => {
+    if (selectedPrescriptions?.length < 1) {
+      console.error("No prescription selected");
+      router.push("/(tabs)/(sharePrescriptions)");
+    }
+
+    const chosenPrescriptions = w3cCredentialRecords.filter((item) => {
+      return selectedPrescriptions.includes(w3cCredentialRecords.indexOf(item));
+    });
+
+    const credentials: DifPexInputDescriptorToCredentials = {};
+    credentials[
+      resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest.requirements[0].submissionEntry[0].inputDescriptorId
+    ] = chosenPrescriptions;
+
+    try {
+      await agentContext.agent.modules.openId4VcHolderModule.acceptSiopAuthorizationRequest(
+        {
+          presentationExchange: {
+            credentials,
+          },
+          authorizationRequest:
+            resolvedAuthorizationRequest?.authorizationRequest,
+        },
+      );
+    } catch (error) {
+      console.error(error);
+    }
+
+    clearResolvedAuthorizationRequest();
+    router.push("/(tabs)/(sharePrescriptions)");
+  };
 
   return (
     <View style={defaultStyles.container}>
@@ -109,19 +150,24 @@ export default function ChoosePrescriptionsScreen() {
         </Text>
       </View>
       <PrescriptionList
-        prescriptions={prescriptions as W3cCredentialRecord[]}
+        prescriptions={w3cCredentialRecords as W3cCredentialRecord[]}
         issuerNames={issuerNames.data}
         selectedPrescriptions={selectedPrescriptions}
         onToggleSelection={toggleSelection}
       />
       <View style={defaultStyles.buttonContent}>
-        <Pressable style={styles.button}>
-          <View>
+        <Pressable style={styles.button} onPress={handleCancel}>
+          <View style={defaultStyles.buttonContent}>
             <Text style={defaultStyles.buttonText}>Cancel</Text>
           </View>
         </Pressable>
-        <Pressable style={styles.button}>
-          <View>
+        <Pressable style={styles.button} onPress={handleShare}>
+          <View style={defaultStyles.buttonContent}>
+            <MaterialCommunityIcons
+              name="share-variant"
+              size={20}
+              color="white"
+            />
             <Text style={defaultStyles.buttonText}>Share</Text>
           </View>
         </Pressable>
