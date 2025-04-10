@@ -74,6 +74,17 @@ const PrescriptionList = ({
             </Text>
           </View>
           <View style={styles.detailRow}>
+            <Text style={styles.detailTitle}>Expires: </Text>
+            <Text style={styles.detail}>
+              {prescriptions[section.title].credential.expirationDate
+                ? new Date(
+                    prescriptions[section.title].credential
+                      .expirationDate as string,
+                  ).toLocaleDateString()
+                : "N/A"}
+            </Text>
+          </View>
+          <View style={styles.detailRow}>
             <Text style={styles.detailTitle}>Added: </Text>
             <Text style={styles.detail}>
               {prescriptions[section.title].createdAt.toLocaleDateString()}

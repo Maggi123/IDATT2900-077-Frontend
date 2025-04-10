@@ -97,6 +97,7 @@ export default function ViewPrescriptions() {
           <p><strong>Name:</strong> ${item.name}</p>
           <p><strong>Active Ingredient:</strong> ${item.activeIngredient}</p>
           <p><strong>Authored On:</strong> ${new Date(item.authoredOn).toLocaleDateString()}</p>
+          <p><strong>Expires:</strong> ${new Date(item.expires).toLocaleDateString()}</p>
           <p><strong>Added:</strong> ${new Date(item.added).toLocaleDateString()}</p>
         </div>
       `,
@@ -124,6 +125,7 @@ export default function ViewPrescriptions() {
             name: item.claims?.name ?? "N/A",
             activeIngredient: item.claims?.activeIngredient ?? "N/A",
             authoredOn: item.claims?.authoredOn ?? "N/A",
+            expires: credential.credential.expirationDate ?? "N/A",
             added: credential.createdAt,
           }));
       });
