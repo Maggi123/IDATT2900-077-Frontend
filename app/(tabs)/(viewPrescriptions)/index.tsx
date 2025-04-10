@@ -65,11 +65,6 @@ export default function ViewPrescriptions() {
     );
   };
 
-  const handleShare = () => {
-    console.log("Sharing:", selectedPrescriptions);
-    // Implement actual share logic here
-  };
-
   const generateHtmlFromPrescriptions = (prescriptionsData: any[]) => {
     return `
 <html lang="en">
@@ -164,20 +159,6 @@ export default function ViewPrescriptions() {
         >
           <MaterialCommunityIcons name="download" size={20} color="white" />
           <Text style={styles.buttonText}>Download</Text>
-        </Pressable>
-
-        <Pressable
-          style={[styles.button]}
-          onPress={handleShare}
-          disabled={selectedPrescriptions.length === 0}
-          accessibilityRole="button"
-        >
-          <MaterialCommunityIcons
-            name="share-variant"
-            size={20}
-            color="white"
-          />
-          <Text style={styles.buttonText}>Share</Text>
         </Pressable>
       </View>
     </View>
