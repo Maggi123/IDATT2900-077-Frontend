@@ -19,6 +19,7 @@ export default function ChoosePrescriptionsScreen() {
   const [selectedPrescriptions, setSelectedPrescriptions] = useState<number[]>(
     [],
   );
+  const [sharingState, setSharingState] = useState<boolean>(false);
   const agentContext = useAgent();
   const router = useRouter();
 
@@ -50,35 +51,44 @@ export default function ChoosePrescriptionsScreen() {
 
   const handleCancel = () => {
     clearResolvedAuthorizationRequest();
-    router.push("/(tabs)/(sharePrescriptions)");
+    router.push("/NotShared");
   };
 
-  if (issuerNames.isPending) return <LoadingComponent />;
+  if (issuerNames.isPending || sharingState) return <LoadingComponent />;
+
+  if (!issuerNames.isSuccess) {
+    console.error("Could not get issuer names.");
+    return <Redirect href="/NotShared" />;
+  }
 
   if (
     !resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest
-      .areRequirementsSatisfied ||
-    !issuerNames.isSuccess
-  )
-    return <Redirect href="/(tabs)/(sharePrescriptions)" />;
+      .areRequirementsSatisfied
+  ) {
+    console.error(
+      "Wallets credentials do not satisfy verification requirements.",
+    );
+    return <Redirect href="/NotShared" />;
+  }
 
   if (
     resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest
       .requirements.length > 1
-  )
-    return <Redirect href="/(tabs)/(sharePrescriptions)" />;
+  ) {
+    console.error(
+      "Wallet implementation does not handle multiple requirements.",
+    );
+    return <Redirect href="/NotShared" />;
+  }
 
   if (
     resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest
       .requirements[0].submissionEntry.length > 1
-  )
-    return <Redirect href="/(tabs)/(sharePrescriptions)" />;
-
-  if (
-    resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest
-      .requirements[0].rule === "all"
   ) {
-    console.log("All prescription credentials are to be submitted");
+    console.error(
+      "Wallet implementation does not handle multiple input descriptors.",
+    );
+    return <Redirect href="/NotShared" />;
   }
 
   if (
@@ -86,7 +96,7 @@ export default function ChoosePrescriptionsScreen() {
       .requirements[0].submissionEntry[0].inputDescriptorId !==
     "PrescriptionDescriptor"
   )
-    return <Redirect href="/(tabs)/(sharePrescriptions)" />;
+    return <Redirect href="/NotShared" />;
 
   const subMissionEntryCredentials =
     resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest
@@ -103,7 +113,10 @@ export default function ChoosePrescriptionsScreen() {
   const handleShare = async () => {
     if (selectedPrescriptions?.length < 1) {
       console.error("No prescription selected");
-      router.push("/(tabs)/(sharePrescriptions)");
+      router.push(
+        "/(tabs)/(sharePrescriptions)/NoPrescriptionsChosenErrorModal",
+      );
+      return;
     }
 
     const chosenPrescriptions = w3cCredentialRecords.filter((item) => {
@@ -115,6 +128,8 @@ export default function ChoosePrescriptionsScreen() {
       resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest.requirements[0].submissionEntry[0].inputDescriptorId
     ] = chosenPrescriptions;
 
+    setSharingState(true);
+
     try {
       await agentContext.agent.modules.openId4VcHolderModule.acceptSiopAuthorizationRequest(
         {
@@ -125,12 +140,15 @@ export default function ChoosePrescriptionsScreen() {
             resolvedAuthorizationRequest?.authorizationRequest,
         },
       );
+      setSharingState(false);
+      clearResolvedAuthorizationRequest();
+      router.push("/Shared");
     } catch (error) {
+      setSharingState(false);
+      clearResolvedAuthorizationRequest();
       console.error(error);
+      router.push("/NotShared");
     }
-
-    clearResolvedAuthorizationRequest();
-    router.push("/(tabs)/(sharePrescriptions)");
   };
 
   return (
@@ -156,12 +174,20 @@ export default function ChoosePrescriptionsScreen() {
         onToggleSelection={toggleSelection}
       />
       <View style={defaultStyles.buttonContent}>
-        <Pressable style={styles.button} onPress={handleCancel}>
+        <Pressable
+          style={styles.button}
+          onPress={handleCancel}
+          accessibilityRole="button"
+        >
           <View style={defaultStyles.buttonContent}>
             <Text style={defaultStyles.buttonText}>Cancel</Text>
           </View>
         </Pressable>
-        <Pressable style={styles.button} onPress={handleShare}>
+        <Pressable
+          style={styles.button}
+          onPress={handleShare}
+          accessibilityRole="button"
+        >
           <View style={defaultStyles.buttonContent}>
             <MaterialCommunityIcons
               name="share-variant"
