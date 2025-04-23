@@ -46,8 +46,8 @@ export default function ViewPrescriptions() {
   if (
     !prescriptions.isSuccess ||
     !issuerNames.isSuccess ||
-    prescriptions.error ||
-    issuerNames.error
+    prescriptions.isError ||
+    issuerNames.isError
   )
     return (
       <View style={defaultStyles.container}>
