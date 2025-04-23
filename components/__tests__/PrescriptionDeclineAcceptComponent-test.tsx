@@ -31,7 +31,7 @@ describe("PrescriptionDeclineAcceptComponent", () => {
     expect(getAllByText("Ibuprofen")).toBeTruthy();
 
     expect(getByText("Authored:")).toBeTruthy();
-    expect(getByText("3/15/2024")).toBeTruthy();
+    expect(getByText(new Date("3/15/2024").toLocaleDateString())).toBeTruthy();
   });
 
   test("should render N/A for undefined name", () => {
@@ -42,6 +42,7 @@ describe("PrescriptionDeclineAcceptComponent", () => {
           activeIngredient: "Ibuprofen",
           authoredOn: "3/15/2024",
         }}
+        expirationDate={new Date("3/16/2024")}
       />,
     );
 
@@ -56,6 +57,7 @@ describe("PrescriptionDeclineAcceptComponent", () => {
           activeIngredient: undefined,
           authoredOn: "3/15/2024",
         }}
+        expirationDate={new Date("3/16/2024")}
       />,
     );
 
@@ -70,6 +72,7 @@ describe("PrescriptionDeclineAcceptComponent", () => {
           activeIngredient: "Ibuprofen",
           authoredOn: undefined,
         }}
+        expirationDate={new Date("3/16/2024")}
       />,
     );
 
@@ -79,6 +82,7 @@ describe("PrescriptionDeclineAcceptComponent", () => {
     const { getAllByText } = render(
       <PrescriptionDeclineAcceptComponent
         newPrescriptionDescription={undefined}
+        expirationDate={new Date("3/16/2024")}
       />,
     );
 
