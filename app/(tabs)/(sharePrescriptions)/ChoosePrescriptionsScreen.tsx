@@ -61,8 +61,20 @@ export default function ChoosePrescriptionsScreen() {
     return <Redirect href="/NotShared" />;
   }
 
+  if (!resolvedAuthorizationRequest) {
+    console.error("Resolved authorization request is undefined.");
+    return <Redirect href="/NotShared" />;
+  }
+
+  if (!resolvedAuthorizationRequest.presentationExchange) {
+    console.error(
+      "Resolved authorization request has no presentation exchange.",
+    );
+    return <Redirect href="/NotShared" />;
+  }
+
   if (
-    !resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest
+    !resolvedAuthorizationRequest.presentationExchange.credentialsForRequest
       .areRequirementsSatisfied
   ) {
     console.error(
@@ -72,7 +84,7 @@ export default function ChoosePrescriptionsScreen() {
   }
 
   if (
-    resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest
+    resolvedAuthorizationRequest.presentationExchange.credentialsForRequest
       .requirements.length > 1
   ) {
     console.error(
@@ -82,7 +94,7 @@ export default function ChoosePrescriptionsScreen() {
   }
 
   if (
-    resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest
+    resolvedAuthorizationRequest.presentationExchange.credentialsForRequest
       .requirements[0].submissionEntry.length > 1
   ) {
     console.error(
@@ -92,14 +104,18 @@ export default function ChoosePrescriptionsScreen() {
   }
 
   if (
-    resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest
+    resolvedAuthorizationRequest.presentationExchange.credentialsForRequest
       .requirements[0].submissionEntry[0].inputDescriptorId !==
     "PrescriptionDescriptor"
-  )
+  ) {
+    console.error(
+      "Wallet implementation does not handle input descriptors with ids other than 'PrescriptionDescriptor'.",
+    );
     return <Redirect href="/NotShared" />;
+  }
 
   const subMissionEntryCredentials =
-    resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest
+    resolvedAuthorizationRequest.presentationExchange.credentialsForRequest
       .requirements[0].submissionEntry[0].verifiableCredentials;
 
   const w3cCredentialRecords = subMissionEntryCredentials
@@ -125,7 +141,7 @@ export default function ChoosePrescriptionsScreen() {
 
     const credentials: DifPexInputDescriptorToCredentials = {};
     credentials[
-      resolvedAuthorizationRequest?.presentationExchange?.credentialsForRequest.requirements[0].submissionEntry[0].inputDescriptorId
+      resolvedAuthorizationRequest.presentationExchange.credentialsForRequest.requirements[0].submissionEntry[0].inputDescriptorId
     ] = chosenPrescriptions;
 
     setSharingState(true);
@@ -137,7 +153,7 @@ export default function ChoosePrescriptionsScreen() {
             credentials,
           },
           authorizationRequest:
-            resolvedAuthorizationRequest?.authorizationRequest,
+            resolvedAuthorizationRequest.authorizationRequest,
         },
       );
       setSharingState(false);
@@ -156,14 +172,14 @@ export default function ChoosePrescriptionsScreen() {
       <View style={defaultStyles.overlay}>
         <Text style={defaultStyles.overlayText}>
           {
-            resolvedAuthorizationRequest?.presentationExchange
-              ?.credentialsForRequest.name
+            resolvedAuthorizationRequest.presentationExchange
+              .credentialsForRequest.name
           }
         </Text>
         <Text style={defaultStyles.overlayText}>
           {
-            resolvedAuthorizationRequest?.presentationExchange
-              ?.credentialsForRequest.purpose
+            resolvedAuthorizationRequest.presentationExchange
+              .credentialsForRequest.purpose
           }
         </Text>
       </View>
