@@ -1,37 +1,22 @@
-import { W3cCredentialSubject, asArray } from "@credo-ts/core";
+import { asArray } from "@credo-ts/core";
 import { useAgent } from "@credo-ts/react-hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
+import { printToFileAsync } from "expo-print";
+import * as Sharing from "expo-sharing";
 import { useState } from "react";
-import { Text, View, StyleSheet, SectionList, Pressable } from "react-native";
+import { Text, View, StyleSheet, Pressable } from "react-native";
 
 import LoadingComponent from "@/components/LoadingComponent";
+import PrescriptionList from "@/components/PrescriptionList";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 export default function ViewPrescriptions() {
-  const [selectedPrescriptions, setSelectedPrescriptions] = useState<string[]>(
+  const agentContext = useAgent();
+  const [selectedPrescriptions, setSelectedPrescriptions] = useState<number[]>(
     [],
   );
-  const agentContext = useAgent();
-
-  const toggleSelection = (id: string) => {
-    setSelectedPrescriptions((prevSelected) =>
-      prevSelected.includes(id)
-        ? prevSelected.filter((item) => item !== id)
-        : [...prevSelected, id],
-    );
-  };
-
-  const handleDownload = () => {
-    console.log("Downloading:", selectedPrescriptions);
-    // Implement actual download logic here
-  };
-
-  const handleShare = () => {
-    console.log("Sharing:", selectedPrescriptions);
-    // Implement actual share logic here
-  };
 
   const prescriptions = useQuery({
     queryKey: ["prescription"],
@@ -61,8 +46,8 @@ export default function ViewPrescriptions() {
   if (
     !prescriptions.isSuccess ||
     !issuerNames.isSuccess ||
-    prescriptions.error ||
-    issuerNames.error
+    prescriptions.isError ||
+    issuerNames.isError
   )
     return (
       <View style={defaultStyles.container}>
@@ -72,108 +57,108 @@ export default function ViewPrescriptions() {
       </View>
     );
 
+  const toggleSelection = (id: number) => {
+    setSelectedPrescriptions((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((item) => item !== id)
+        : [...prevSelected, id],
+    );
+  };
+
+  const generateHtmlFromPrescriptions = (prescriptionsData: any[]) => {
+    return `
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Prescription Report</title>
+    <style>
+      body { font-family: sans-serif; padding: 20px; }
+      h1 { color: #4B0082; }
+      .prescription {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Prescriptions</h1>
+    ${prescriptionsData
+      .map(
+        (item) => `
+        <div class="prescription">
+          <p><strong>Issuer:</strong> ${item.issuer}</p>
+          <p><strong>Name:</strong> ${item.name}</p>
+          <p><strong>Active Ingredient:</strong> ${item.activeIngredient}</p>
+          <p><strong>Authored On:</strong> ${new Date(item.authoredOn).toLocaleDateString()}</p>
+          <p><strong>Expires:</strong> ${new Date(item.expires).toLocaleDateString()}</p>
+          <p><strong>Added:</strong> ${new Date(item.added).toLocaleDateString()}</p>
+        </div>
+      `,
+      )
+      .join("")}
+  </body>
+</html>
+  `;
+  };
+
+  const handleDownloadPdf = async () => {
+    try {
+      const selectedData = prescriptions.data.flatMap((credential, index) => {
+        const subject = credential.credential.credentialSubject;
+        console.log(subject);
+        const data = asArray(subject);
+        return data
+          .filter((_) => {
+            return selectedPrescriptions.includes(index);
+          })
+          .map((item) => ({
+            issuer:
+              issuerNames.data[credential.credential.issuerId] ??
+              credential.credential.issuerId,
+            name: item.claims?.name ?? "N/A",
+            activeIngredient: item.claims?.activeIngredient ?? "N/A",
+            authoredOn: item.claims?.authoredOn ?? "N/A",
+            expires: credential.credential.expirationDate ?? "N/A",
+            added: credential.createdAt,
+          }));
+      });
+
+      const html = generateHtmlFromPrescriptions(selectedData);
+      const { uri } = await printToFileAsync({ html });
+
+      console.log("PDF saved to:", uri);
+
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri);
+      } else {
+        alert("PDF saved at: " + uri);
+      }
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Something went wrong while creating the PDF.");
+    }
+  };
+
   return (
     <View style={defaultStyles.container}>
-      <SectionList
-        style={styles.list}
-        sections={prescriptions.data.map((credential) => {
-          const data: W3cCredentialSubject[] = asArray(
-            credential.credential.credentialSubject,
-          );
-          return {
-            title: credential,
-            data,
-          };
-        })}
-        keyExtractor={(_, key) => `${key}`}
-        renderItem={({ section, item }) => (
-          <View style={styles.prescriptionBox}>
-            <View style={styles.topRow}>
-              <Text style={styles.issuer}>
-                {issuerNames
-                  ? ((issuerNames.data[
-                      section.title.credential.issuerId
-                    ] as string) ?? section.title.credential.issuerId)
-                  : section.title.credential.issuerId}
-              </Text>
-              <Pressable
-                onPress={() => {
-                  toggleSelection(
-                    JSON.stringify(section) + JSON.stringify(item),
-                  );
-                }}
-                style={[
-                  styles.checkbox,
-                  selectedPrescriptions.includes(
-                    JSON.stringify(section) + JSON.stringify(item),
-                  ) && styles.checked,
-                ]}
-                accessibilityRole="checkbox"
-              />
-            </View>
-            <Text style={styles.name}>
-              {item.claims ? (item.claims.name as string) : "N/A"}
-            </Text>
-            <View style={styles.detailRow}>
-              <Text style={styles.detailTitle}>Active ingredient: </Text>
-              <Text style={styles.detail}>
-                {item.claims
-                  ? ((item.claims.activeIngredient as string) ?? "N/A")
-                  : "N/A"}
-              </Text>
-            </View>
-            <View style={styles.detailRow}>
-              <Text style={styles.detailTitle}>Authored: </Text>
-              <Text style={styles.detail}>
-                {item.claims
-                  ? new Date(
-                      item.claims.authoredOn as string,
-                    ).toLocaleDateString()
-                  : "N/A"}
-              </Text>
-            </View>
-            <View style={styles.detailRow}>
-              <Text style={styles.detailTitle}>Added: </Text>
-              <Text style={styles.detail}>
-                {section.title.createdAt.toLocaleDateString()}
-              </Text>
-            </View>
-            <View style={styles.detailRow}>
-              <Text style={styles.detailTitle}>Expires: </Text>
-              <Text style={styles.detail}>
-                {section.title.credential.expirationDate
-                  ? new Date(
-                      section.title.credential.expirationDate,
-                    ).toLocaleDateString()
-                  : "N/A"}
-              </Text>
-            </View>
-          </View>
-        )}
+      <PrescriptionList
+        prescriptions={prescriptions.data}
+        issuerNames={issuerNames.data}
+        selectedPrescriptions={selectedPrescriptions}
+        onToggleSelection={toggleSelection}
       />
+
       <View style={styles.buttonContainer}>
         <Pressable
           style={[styles.button]}
-          onPress={handleDownload}
+          onPress={handleDownloadPdf}
           disabled={selectedPrescriptions.length === 0}
           accessibilityRole="button"
         >
           <MaterialCommunityIcons name="download" size={20} color="white" />
           <Text style={styles.buttonText}>Download</Text>
-        </Pressable>
-
-        <Pressable
-          style={[styles.button]}
-          onPress={handleShare}
-          disabled={selectedPrescriptions.length === 0}
-          accessibilityRole="button"
-        >
-          <MaterialCommunityIcons
-            name="share-variant"
-            size={20}
-            color="white"
-          />
-          <Text style={styles.buttonText}>Share</Text>
         </Pressable>
       </View>
     </View>
@@ -181,54 +166,6 @@ export default function ViewPrescriptions() {
 }
 
 const styles = StyleSheet.create({
-  list: {
-    marginTop: 20,
-    width: "90%",
-    color: Colors.text,
-  },
-  prescriptionBox: {
-    backgroundColor: Colors.white,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: Colors.lightgray,
-  },
-  topRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  issuer: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: Colors.darkpurple,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  detailRow: {
-    flexDirection: "row",
-    marginBottom: 4,
-  },
-  detailTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  detail: {
-    fontSize: 14,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 5,
-    borderWidth: 2,
-    borderColor: Colors.text,
-  },
-  checked: {
-    backgroundColor: Colors.text,
-  },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -245,7 +182,6 @@ const styles = StyleSheet.create({
     width: "48%",
     gap: 8,
   },
-
   buttonText: {
     color: Colors.white,
     fontSize: 16,

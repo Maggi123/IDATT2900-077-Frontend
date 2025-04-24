@@ -4,30 +4,23 @@ import { View, StyleSheet } from "react-native";
 import NavigationOptionButton from "@/components/NavigationOptionButton";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
-export default function AddPrescriptions() {
+export default function SharePrescriptions() {
   const router = useRouter();
 
   return (
     <View style={styles.container}>
       <NavigationOptionButton
-        icon="qrcode-scan"
-        text="Scan QR code"
+        icon="qrcode"
+        text="By QR code"
         onPress={() => {
-          router.push("/QRCodeScreen");
+          router.push("/ShareQRScreen");
         }}
       />
       <NavigationOptionButton
-        icon="pencil-outline"
-        text="Input URL"
+        icon="link-variant"
+        text="By URL input"
         onPress={() => {
-          router.push("/URLScreen");
-        }}
-      />
-      <NavigationOptionButton
-        icon="upload-outline"
-        text="Upload document"
-        onPress={() => {
-          router.push("/UploadScreen");
+          router.push("/ShareURLScreen");
         }}
       />
     </View>

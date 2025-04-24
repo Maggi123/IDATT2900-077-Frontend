@@ -60,34 +60,34 @@ describe("ViewPrescriptions Screen", () => {
     await waitFor(() => {
       expect(nameMatches).toHaveLength(2);
       expect(getByText("Trusted Health Org")).toBeTruthy();
-      expect(getByText("3/20/2024")).toBeTruthy();
-      expect(getByText("3/21/2024")).toBeTruthy();
+      expect(
+        getByText(new Date("3/20/2024").toLocaleDateString()),
+      ).toBeTruthy();
+      expect(
+        getByText(new Date("3/21/2024").toLocaleDateString()),
+      ).toBeTruthy();
     });
   });
 
-  test("should disable the download and share buttons when no prescription is selected", async () => {
+  test("should disable the download button when no prescription is selected", async () => {
     const { getByRole } = render(<ViewPrescriptions />);
 
     const downloadBtn = getByRole("button", { name: "Download" });
-    const shareBtn = getByRole("button", { name: "Share" });
 
     await waitFor(() => {
       expect(downloadBtn?.props.accessibilityState?.disabled).toBe(true);
-      expect(shareBtn?.props.accessibilityState?.disabled).toBe(true);
     });
   });
 
-  test("should enable the download and share buttons when prescriptions are selected", async () => {
+  test("should enable the download button when prescriptions are selected", async () => {
     const { getAllByRole, getByRole } = render(<ViewPrescriptions />);
 
     const checkboxes = getAllByRole("checkbox");
     fireEvent.press(checkboxes[0]);
 
     const downloadBtn = getByRole("button", { name: "Download" });
-    const shareBtn = getByRole("button", { name: "Share" });
 
     expect(downloadBtn?.props.accessibilityState?.disabled).toBe(false);
-    expect(shareBtn?.props.accessibilityState?.disabled).toBe(false);
   });
 });
 
@@ -120,4 +120,3 @@ describe("ViewPrescriptions error handling", () => {
     expect(getByText("Something went wrong fetching data.")).toBeTruthy();
   });
 });
-
