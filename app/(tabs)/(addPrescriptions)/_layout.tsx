@@ -12,6 +12,7 @@ export default function AddPrescriptionsLayout() {
     <Stack
       screenOptions={{
         ...headerStyles,
+        headerTitle: "Add digital document",
         headerLeft: () => (
           <Pressable
             onPress={() => {

@@ -60,6 +60,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="HomeScreen"
           options={{
+            headerTitle: "",
             tabBarButton: (props) => (
               <TouchableOpacity {...props} style={styles.tabBarContainer}>
                 <View style={styles.circle}>
