@@ -167,19 +167,15 @@ export default function ViewPrescriptions() {
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
+    alignItems: "center",
     marginVertical: 16,
-    width: "90%",
+    width: "100%",
   },
   button: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: Colors.button,
-    padding: 12,
+    ...defaultStyles.button,
     borderRadius: 8,
-    width: "48%",
     gap: 8,
   },
   buttonText: {
