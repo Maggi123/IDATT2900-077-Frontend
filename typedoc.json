@@ -1,0 +1,9 @@
+{
+  "entryPointStrategy": "expand",
+  "entryPoints": ["./app", "./components", "./agent", "./util", "./state"],
+  "out": "docs",
+  "exclude": ["**/node_modules/**", "**/__tests__/**"],
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "skipErrorChecking": true
+}
