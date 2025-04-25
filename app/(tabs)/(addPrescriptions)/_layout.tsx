@@ -5,6 +5,11 @@ import { Pressable } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { headerStyles } from "@/stylesheets/HeaderStyles";
 
+/**
+ * The layout component for the "Add Prescriptions" route group.
+ *
+ * @returns A Stack Navigator for the add prescriptions flow.
+ */
 export default function AddPrescriptionsLayout() {
   const router = useRouter();
 

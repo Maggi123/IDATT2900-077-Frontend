@@ -4,6 +4,12 @@ import { View, StyleSheet } from "react-native";
 import NavigationOptionButton from "@/components/NavigationOptionButton";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
+/**
+ * Screen that provides options to add prescriptions.
+ * Users can choose to scan a QR code, input a URL, or upload a document.
+ * Each option navigates to a different screen for the respective action.
+ * @returns The AddPrescriptions component with navigation options.
+ */
 export default function AddPrescriptions() {
   const router = useRouter();
 

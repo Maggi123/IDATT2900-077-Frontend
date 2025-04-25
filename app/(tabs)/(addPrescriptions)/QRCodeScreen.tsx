@@ -12,6 +12,18 @@ import QRCodeScannerComponent from "@/components/QRCodeScannerComponent";
 import { useCredentialResponsesStore } from "@/state/CredentialResponsesStore";
 import { useIssuerInfoStore } from "@/state/IssuerInfoStore";
 
+/**
+ * Screen for scanning a QR code to receive a digital credential.
+ *
+ * - Uses the QRCodeScannerComponent to scan data.
+ * - Resolves and retrieves credentials using the scanned data and the agent.
+ * - Stores the issuer name and credential responses in state management stores.
+ * - Displays a loading indicator while processing the QR code data.
+ * - Navigates to the DeclineAcceptScreen if the credential is successfully retrieved,
+ *   or to NotReceived if an error occurs or the credential is invalid.
+ *
+ * @returns The QRCodeScreen component.
+ */
 export default function QRCodeScreen() {
   const [scannedData, setScannedData] = useState<string>("");
   const [receivingState, setReceivingState] = useState(false);

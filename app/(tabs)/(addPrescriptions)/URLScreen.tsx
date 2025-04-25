@@ -14,6 +14,17 @@ import { useCredentialResponsesStore } from "@/state/CredentialResponsesStore";
 import { useIssuerInfoStore } from "@/state/IssuerInfoStore";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
+/**
+ * Screen for handling URL input and receiving digital credentials.
+ *
+ * - Allows the user to input a URL.
+ * - Resolves and retrieves credentials using the input URL and the agent.
+ * - Stores the issuer name and credential responses in state management stores.
+ * - Navigates to the DeclineAcceptScreen if the credential is successfully retrieved,
+ *   or to NotReceived if an error occurs or the credential is invalid.
+ *
+ * @returns The URLScreen component.
+ */
 export default function URLScreen() {
   const [url, setUrl] = useState<string>("");
   const [receivingState, setReceivingState] = useState(false);
