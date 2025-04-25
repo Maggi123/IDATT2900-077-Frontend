@@ -4,11 +4,22 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
+/**
+ * Props for the QRCodeScannerComponent.
+ */
 interface QRCodeScannerProps {
+  /** Function to call when a QR code is scanned. */
   onScan: (data: string) => void;
 }
 
-const QRCodeScannerComponent: React.FC<QRCodeScannerProps> = ({ onScan }) => {
+/**
+ * QRCodeScannerComponent is a React component that provides a camera view for scanning QR codes.
+ * It requests camera permissions and handles the scanned data.
+ *
+ * @param {QRCodeScannerProps} props - The props for the component.
+ * @returns The QRCodeScannerComponent.
+ */
+const QRCodeScannerComponent = ({ onScan }: QRCodeScannerProps) => {
   const [permission, requestPermission] = useCameraPermissions();
   const [scannedData, setScannedData] = useState<string | null>(null);
 
