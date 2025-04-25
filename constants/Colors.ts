@@ -1,3 +1,6 @@
+/**
+ * Colors used in the app
+ */
 export const Colors = {
   background: "#e9d3f6",
   bar: "#65558f",

@@ -8,6 +8,14 @@ import { Auth0Config } from "@/constants/Auth0Config";
 
 const queryClient = new QueryClient();
 
+/**
+ * Root layout component that sets up global providers for the app.
+ *
+ * - Provides Auth0Provider for authentication with Auth0.
+ * - Sets up the QueryClientProvider for managing React Query state.
+ *
+ * @returns The RootLayout component.
+ */
 export default function RootLayout() {
   useReactQueryDevTools(queryClient);
 

@@ -8,6 +8,15 @@ import { useAuth0 } from "react-native-auth0";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 import { secureStoreKeyFromUserSub } from "@/util/KeyUtil";
 
+/**
+ * A screen for user registration using an external authentication service (Auth0).
+ *
+ * - Initiates authentication when the register button is pressed.
+ * - Stores a registration flag and a random key in SecureStore after successful authentication.
+ * - Redirects the user to the HomeScreen once registered.
+ *
+ * @returns The RegisterScreen component.
+ */
 export default function RegisterScreen() {
   const router = useRouter();
   const { authorize, user, error } = useAuth0();
