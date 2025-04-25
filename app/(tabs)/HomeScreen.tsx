@@ -8,6 +8,22 @@ import LoadingComponent from "@/components/LoadingComponent";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
+/**
+ * HomeScreen component displaying the user's DID and navigation buttons for prescription management.
+ *
+ * - Retrieves the agent's DID using the Credo agent and React Query.
+ * - Displays a loading screen while fetching the DID.
+ * - Shows the DID once loaded.
+ * - Provides three buttons that navigate to:
+ *   - Add prescriptions screen
+ *   - View prescriptions screen
+ *   - Share prescriptions screen
+ *
+ * Uses expo-router for navigation and MaterialCommunityIcons for button icons.
+ *
+ * @returns The HomeScreen component.
+ */
+
 export default function HomeScreen() {
   const router = useRouter();
   const agent = useAgent();

@@ -4,6 +4,14 @@ import { View, StyleSheet } from "react-native";
 import NavigationOptionButton from "@/components/NavigationOptionButton";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
+/**
+ * Screen for choosing how to share prescriptions.
+ *
+ * Provides options to share prescriptions either by QR code or URL input.
+ * Navigates to the corresponding screens when an option is selected.
+ *
+ * @returns The rendered `SharePrescriptions` component.
+ */
 export default function SharePrescriptions() {
   const router = useRouter();
 

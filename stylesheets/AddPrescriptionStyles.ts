@@ -3,6 +3,10 @@ import { StyleSheet } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
+/**
+ * Styles for the AddPrescription component.
+ * This includes styles for the container, overlay, text, and buttons.
+ */
 export const addPrescriptionStyles = StyleSheet.create({
   container: {
     ...defaultStyles.container,

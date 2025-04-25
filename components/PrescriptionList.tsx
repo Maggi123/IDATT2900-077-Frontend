@@ -7,13 +7,28 @@ import { Text, View, StyleSheet, SectionList, Pressable } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 
+/**
+ * Props for the PrescriptionList component.
+ */
 type PrescriptionListProps = {
+  /** List of prescriptions to display. */
   prescriptions: W3cCredentialRecord[];
+  /** Mapping of issuer IDs to issuer names. */
   issuerNames: Record<string, unknown>;
+  /** List of selected prescriptions. */
   selectedPrescriptions: number[];
+  /** Function to toggle the selection of a prescription. */
   onToggleSelection: (id: number) => void;
 };
 
+/**
+ * PrescriptionList component displays a list of prescriptions with details such as issuer,
+ * active ingredient, authored date, and expiration date. Allows for selecting
+ * prescriptions via checkboxes.
+ *
+ * @param {PrescriptionListProps} props - The component props.
+ * @returns The PrescriptionList component.
+ */
 const PrescriptionList = ({
   prescriptions,
   issuerNames,

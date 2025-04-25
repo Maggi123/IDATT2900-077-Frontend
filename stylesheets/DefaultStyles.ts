@@ -2,6 +2,10 @@ import { StyleSheet } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 
+/**
+ * Default styles for various components in the application.
+ * This includes styles for the container, title, buttons, overlays, and text.
+ */
 export const defaultStyles = StyleSheet.create({
   container: {
     flex: 1,

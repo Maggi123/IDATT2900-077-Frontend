@@ -3,7 +3,15 @@ import { View, Text, Pressable } from "react-native";
 
 import { addPrescriptionStyles } from "@/stylesheets/AddPrescriptionStyles";
 
-export default function Received() {
+/**
+ * Screen displayed when there is an error receiving a digital document.
+ *
+ * This component informs the user that something went wrong and provides
+ * an option to navigate back to the "Add Prescriptions" screen.
+ *
+ * @returns The NotReceived component with error message and navigation button.
+ */
+export default function NotReceived() {
   const router = useRouter();
 
   const handleNavigate = () => {

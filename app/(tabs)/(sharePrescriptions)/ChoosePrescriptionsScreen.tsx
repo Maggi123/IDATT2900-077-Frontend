@@ -15,6 +15,16 @@ import PrescriptionList from "@/components/PrescriptionList";
 import { useResolvedAuthorizationRequestStore } from "@/state/ResolvedAuthorizationRequestStore";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
+/**
+ * Screen for choosing and sharing prescriptions based on the resolved authorization request.
+ *
+ * - Displays a list of prescriptions retrieved from the wallet, with each prescription being selectable.
+ * - Allows the user to select one or more prescriptions and share them in response to an authorization request.
+ * - Handles various states such as loading, sharing, and validation of required credentials.
+ * - Redirects the user to different screens based on whether the prescriptions are shared successfully or not.
+ *
+ * @returns The ChoosePrescriptionsScreen component.
+ */
 export default function ChoosePrescriptionsScreen() {
   const [selectedPrescriptions, setSelectedPrescriptions] = useState<number[]>(
     [],

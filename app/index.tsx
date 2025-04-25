@@ -5,6 +5,15 @@ import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
+/**
+ * Index component that serves as the entry point of the application.
+ *
+ * - Displays a button to register or login based on the user's registration status.
+ * - Uses SecureStore to check if the user is registered.
+ * - Navigates to the appropriate screen when the button is pressed.
+ *
+ * @returns The Index component.
+ */
 export default function Index() {
   const [registered, setRegistered] = useState(false);
   const router = useRouter();

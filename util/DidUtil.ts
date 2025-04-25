@@ -2,6 +2,14 @@ import { Agent, KeyType, Key, TypedArrayEncoder } from "@credo-ts/core";
 
 import { getBackendIp, getIndyIp } from "@/util/NetworkUtil";
 
+/**
+ * Fetches the DID for the agent.
+ * If the agent does not have a DID, it generates one using the backend service.
+ * It also verifies that the DID can be used for signing.
+ *
+ * @param agent The agent for which the DID is being retrieved.
+ * @throws Error If the DID cannot be generated or used for signing.
+ */
 export async function getDidForAgent(agent: Agent) {
   const dids = await agent.dids.getCreatedDids({
     method: "indy",

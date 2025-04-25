@@ -14,6 +14,22 @@ import { useIssuerInfoStore } from "@/state/IssuerInfoStore";
 import { addPrescriptionStyles } from "@/stylesheets/AddPrescriptionStyles";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
+/**
+ * Screen for accepting or declining a received prescription document.
+ *
+ * This screen displays information about the issuer and the prescription claims,
+ * and provides two options for the user:
+ * - Accept: stores the credential using the agent and redirects to `/Received`.
+ * - Decline: clears the stored credential and returns to the previous screen.
+ *
+ * It handles state using Zustand stores:
+ * - `useCredentialResponsesStore` for the received VC response
+ * - `useIssuerInfoStore` for displaying issuer metadata
+ *
+ * If no credential is available or it lacks subjects, redirects to `/NotReceived`.
+ *
+ * @returns The DeclineAcceptScreen component.
+ */
 export default function DeclineAcceptScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();

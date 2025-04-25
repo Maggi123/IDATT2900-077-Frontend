@@ -5,8 +5,16 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
+/**
+ * Screen for uploading a document.
+ *
+ * - Allows the user to select a document using the device's document picker.
+ * - Displays the selected document's name once picked.
+ * - Provides a button to upload the selected document.
+ *
+ * @returns The UploadScreen component.
+ */
 export default function UploadScreen() {
-  // Keeping the state as an array to allow adding documents, but limiting to one document
   const [selectedDocument, setSelectedDocument] = useState<
     DocumentPicker.DocumentPickerAsset[]
   >([]);

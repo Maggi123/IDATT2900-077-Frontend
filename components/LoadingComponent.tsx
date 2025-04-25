@@ -3,6 +3,13 @@ import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
+/**
+ * LoadingComponent is a simple loading indicator component.
+ *
+ * - Displays a loading spinner while data is being fetched or processed.
+ *
+ * @returns The LoadingComponent.
+ */
 export default function LoadingComponent() {
   return (
     <View style={styles.container}>

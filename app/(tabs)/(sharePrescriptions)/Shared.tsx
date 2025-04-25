@@ -3,6 +3,13 @@ import { View, Text, Pressable } from "react-native";
 
 import { addPrescriptionStyles } from "@/stylesheets/AddPrescriptionStyles";
 
+/**
+ * Screen displayed when documents are successfully shared.
+ *
+ * Informs the user that the document(s) have been successfully shared and provides a button to navigate back to the share prescriptions screen.
+ *
+ * @returns The Shared component.
+ */
 export default function Shared() {
   const router = useRouter();
 

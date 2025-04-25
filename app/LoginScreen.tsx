@@ -7,6 +7,15 @@ import { useAuth0 } from "react-native-auth0";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 import { secureStoreKeyFromUserSub } from "@/util/KeyUtil";
 
+/**
+ * LoginScreen component for user authentication.
+ *
+ * - Uses Auth0 for authentication.
+ * - Redirects to the home screen upon successful login.
+ * - Displays a button to initiate the login process.
+ *
+ * @returns The LoginScreen component.
+ */
 export default function LoginScreen() {
   const { authorize, user, error, clearSession } = useAuth0();
   const router = useRouter();

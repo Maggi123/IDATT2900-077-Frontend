@@ -8,6 +8,16 @@ import URLInputComponent from "@/components/URLInputComponent";
 import { useResolvedAuthorizationRequestStore } from "@/state/ResolvedAuthorizationRequestStore";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
+/**
+ * Screen for inputting a URL and sharing data by resolving an authorization request.
+ *
+ * - Uses the URLInputComponent to input the URL for sharing.
+ * - Attempts to resolve an authorization request based on the provided URL.
+ * - If successful, the resolved authorization request is stored, and the user is redirected to the ChoosePrescriptionsScreen.
+ * - Displays a loading screen while the sharing process is ongoing.
+ *
+ * @returns The ShareURLScreen component.
+ */
 export default function ShareURLScreen() {
   const [url, setUrl] = useState<string>("");
   const [sharingState, setSharingState] = useState(false);

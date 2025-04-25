@@ -6,6 +6,16 @@ import LoadingComponent from "@/components/LoadingComponent";
 import QRCodeScannerComponent from "@/components/QRCodeScannerComponent";
 import { useResolvedAuthorizationRequestStore } from "@/state/ResolvedAuthorizationRequestStore";
 
+/**
+ * Screen for scanning a QR code to share data and resolve an authorization request.
+ *
+ * - Uses the QRCodeScannerComponent to scan a QR code.
+ * - Processes the scanned data and attempts to resolve an authorization request.
+ * - If the QR code is valid, the resolved authorization request is stored, and the user is redirected to the ChoosePrescriptionsScreen.
+ * - Displays a loading screen while the sharing process is ongoing.
+ *
+ * @returns The ShareQRScreen component.
+ */
 export default function ShareQRScreen() {
   const [scannedData, setScannedData] = useState<string>("");
   const [sharingState, setSharingState] = useState(false);

@@ -3,11 +3,20 @@ import { Text, View, StyleSheet } from "react-native";
 import { PrescriptionClaims } from "@/agent/Vc";
 import { addPrescriptionStyles } from "@/stylesheets/AddPrescriptionStyles";
 
+/**
+ * Props for the PrescriptionDeclineAcceptComponent.
+ */
 type PrescriptionDeclineAcceptComponentProps = {
   newPrescriptionDescription: PrescriptionClaims;
   expirationDate?: Date;
 };
 
+/**
+ * Component to display prescription details and allow users to accept or decline the prescription.
+ *
+ * @param {PrescriptionDeclineAcceptComponentProps} props - The component props.
+ * @returns The PrescriptionDeclineAcceptComponent.
+ */
 export default function PrescriptionDeclineAcceptComponent(
   props: PrescriptionDeclineAcceptComponentProps,
 ) {

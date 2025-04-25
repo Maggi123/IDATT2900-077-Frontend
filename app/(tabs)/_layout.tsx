@@ -15,6 +15,15 @@ import { Colors } from "@/constants/Colors";
 import { getDidForAgent } from "@/util/DidUtil";
 import { secureStoreKeyFromUserSub } from "@/util/KeyUtil";
 
+/**
+ * TabLayout component that sets up the main tab navigation and provides the agent context.
+ *
+ * - Initializes a Credo Agent using a key retrieved from SecureStore.
+ * - Wraps the application in `AgentProvider` to provide the agent throughout the app.
+ * - Customizes tab bar appearance.
+ *
+ * @returns The main tab layout wrapped in an AgentProvider.
+ */
 export default function TabLayout() {
   const [agent, setAgent] = useState<Agent>();
   const { user } = useAuth0();
@@ -60,6 +69,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="HomeScreen"
           options={{
+            headerTitle: "",
             tabBarButton: (props) => (
               <TouchableOpacity {...props} style={styles.tabBarContainer}>
                 <View style={styles.circle}>

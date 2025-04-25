@@ -12,6 +12,17 @@ import PrescriptionList from "@/components/PrescriptionList";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
+/**
+ * Screen for viewing and exporting prescriptions.
+ *
+ * - Fetches all credential records representing prescriptions from the agent.
+ * - Retrieves issuer names from generic records.
+ * - Displays prescriptions in a selectable list.
+ * - Allows users to generate a PDF from selected prescriptions.
+ * - Uses Expo's print and sharing APIs to export the PDF.
+ *
+ * @returns The ViewPrescriptions screen component.
+ */
 export default function ViewPrescriptions() {
   const agentContext = useAgent();
   const [selectedPrescriptions, setSelectedPrescriptions] = useState<number[]>(
@@ -167,19 +178,15 @@ export default function ViewPrescriptions() {
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
+    alignItems: "center",
     marginVertical: 16,
-    width: "90%",
+    width: "100%",
   },
   button: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: Colors.button,
-    padding: 12,
+    ...defaultStyles.button,
     borderRadius: 8,
-    width: "48%",
     gap: 8,
   },
   buttonText: {
