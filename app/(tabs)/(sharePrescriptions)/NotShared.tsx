@@ -3,6 +3,13 @@ import { View, Text, Pressable } from "react-native";
 
 import { addPrescriptionStyles } from "@/stylesheets/AddPrescriptionStyles";
 
+/**
+ * Screen displayed when there is an error while sharing documents.
+ *
+ * Informs the user of an error and provides a button to navigate back to the share prescriptions screen.
+ *
+ * @returns The NotShared component.
+ */
 export default function NotShared() {
   const router = useRouter();
 
