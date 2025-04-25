@@ -1,6 +1,8 @@
 # IDATT2900-077 Frontend "MyHealthWallet"
+## Prerequisites
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+- Set up the [Android Emulator](https://docs.expo.dev/workflow/android-studio-emulator/).
+- Set up the [backend](https://github.com/Maggi123/IDATT2900-077-Backend).
 
 ## Get started
 
