@@ -1,31 +1,38 @@
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react-native";
-import ChoosePrescriptionsScreen from "@/app/(tabs)/(sharePrescriptions)/ChoosePrescriptionsScreen";
-import { useQuery } from "@tanstack/react-query";
-import { Redirect, useRouter } from "expo-router";
-import { useAgent } from "@credo-ts/react-hooks";
-import { useResolvedAuthorizationRequestStore } from "@/state/ResolvedAuthorizationRequestStore";
 import { ClaimFormat } from "@credo-ts/core";
+import { useAgent } from "@credo-ts/react-hooks";
+import { useQuery } from "@tanstack/react-query";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react-native";
+import { Redirect, useRouter } from "expo-router";
 
-jest.mock('expo-router', () => ({
+import ChoosePrescriptionsScreen from "@/app/(tabs)/(sharePrescriptions)/ChoosePrescriptionsScreen";
+import { useResolvedAuthorizationRequestStore } from "@/state/ResolvedAuthorizationRequestStore";
+
+jest.mock("expo-router", () => ({
   useRouter: jest.fn(),
   Redirect: jest.fn(({ href }) => `Redirected to ${href}`),
 }));
 
-jest.mock('@tanstack/react-query', () => ({
+jest.mock("@tanstack/react-query", () => ({
   useQuery: jest.fn(),
 }));
 
-jest.mock('@credo-ts/react-hooks', () => ({
+jest.mock("@credo-ts/react-hooks", () => ({
   useAgent: jest.fn(),
 }));
 
-jest.mock('@/state/ResolvedAuthorizationRequestStore', () => ({
+jest.mock("@/state/ResolvedAuthorizationRequestStore", () => ({
   useResolvedAuthorizationRequestStore: jest.fn(),
 }));
 
-jest.mock('@/components/PrescriptionList', () => 'PrescriptionList');
+jest.mock("@/components/PrescriptionList", () => "PrescriptionList");
 
-describe('ChoosePrescriptionsScreen', () => {
+describe("ChoosePrescriptionsScreen", () => {
   const mockRouter = {
     push: jest.fn(),
   };
@@ -54,48 +61,56 @@ describe('ChoosePrescriptionsScreen', () => {
     (useQuery as jest.Mock).mockReturnValue({
       isPending: false,
       isSuccess: true,
-      data: { 'issuer-1': 'Issuer 1', 'issuer-2': 'Issuer 2' },
+      data: { "issuer-1": "Issuer 1", "issuer-2": "Issuer 2" },
     });
 
-    (useResolvedAuthorizationRequestStore as unknown as jest.Mock).mockImplementation((selector) => {
+    (
+      useResolvedAuthorizationRequestStore as unknown as jest.Mock
+    ).mockImplementation((selector) => {
       const store = {
         resolvedAuthorizationRequest: {
-          authorizationRequest: { id: 'auth-request-1' },
+          authorizationRequest: { id: "auth-request-1" },
           presentationExchange: {
             credentialsForRequest: {
               areRequirementsSatisfied: true,
-              name: 'Test Authorization',
-              purpose: 'Test Purpose',
+              name: "Test Authorization",
+              purpose: "Test Purpose",
               requirements: [
                 {
                   submissionEntry: [
                     {
-                      inputDescriptorId: 'PrescriptionDescriptor',
+                      inputDescriptorId: "PrescriptionDescriptor",
                       verifiableCredentials: [
                         {
                           type: ClaimFormat.JwtVc,
-                          credentialRecord: { id: 'credential-1', metadata: { issuer: 'issuer-1' } }
+                          credentialRecord: {
+                            id: "credential-1",
+                            metadata: { issuer: "issuer-1" },
+                          },
                         },
                         {
                           type: ClaimFormat.LdpVc,
-                          credentialRecord: { id: 'credential-2', metadata: { issuer: 'issuer-2' } }
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          }
+                          credentialRecord: {
+                            id: "credential-2",
+                            metadata: { issuer: "issuer-2" },
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
         },
-        clear: mockClear
+        clear: mockClear,
       };
       return selector(store);
     });
 
     mockAgent.agent.genericRecords.getAll.mockResolvedValue([
-      { id: 'issuer-1', content: { name: 'Issuer 1' } },
-      { id: 'issuer-2', content: { name: 'Issuer 2' } }
+      { id: "issuer-1", content: { name: "Issuer 1" } },
+      { id: "issuer-2", content: { name: "Issuer 2" } },
     ]);
   });
 
@@ -103,7 +118,7 @@ describe('ChoosePrescriptionsScreen', () => {
     (useQuery as jest.Mock).mockReturnValue({
       isPending: false,
       isSuccess: true,
-      data: { 'issuer-1': 'Issuer 1', 'issuer-2': 'Issuer 2' },
+      data: { "issuer-1": "Issuer 1", "issuer-2": "Issuer 2" },
     });
 
     render(<ChoosePrescriptionsScreen />);
@@ -115,10 +130,12 @@ describe('ChoosePrescriptionsScreen', () => {
   });
 
   it("should handle error when fetching issuer names fails", async () => {
-    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
     (useQuery as jest.Mock).mockReturnValue({
-      isError: true
+      isError: true,
     });
 
     render(<ChoosePrescriptionsScreen />);
@@ -130,7 +147,9 @@ describe('ChoosePrescriptionsScreen', () => {
   });
 
   it("should show error modal when share button is pressed without selecting prescriptions", async () => {
-    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
     render(<ChoosePrescriptionsScreen />);
 
@@ -139,7 +158,7 @@ describe('ChoosePrescriptionsScreen', () => {
 
     // Check if the router push was called with the expected path
     expect(mockRouter.push).toHaveBeenCalledWith(
-      "/(tabs)/(sharePrescriptions)/NoPrescriptionsChosenErrorModal"
+      "/(tabs)/(sharePrescriptions)/NoPrescriptionsChosenErrorModal",
     );
 
     expect(consoleErrorSpy).toHaveBeenCalledWith("No prescription selected");
@@ -148,12 +167,17 @@ describe('ChoosePrescriptionsScreen', () => {
   });
 
   it("should redirect to Shared page when share button is pressed with prescriptions selected", async () => {
-    mockAgent.agent.modules.openId4VcHolderModule.acceptSiopAuthorizationRequest.mockResolvedValueOnce({});
+    mockAgent.agent.modules.openId4VcHolderModule.acceptSiopAuthorizationRequest.mockResolvedValueOnce(
+      {},
+    );
 
-    const { UNSAFE_getAllByType, getByText } = render(<ChoosePrescriptionsScreen />);
+    const { UNSAFE_getAllByType, getByText } = render(
+      <ChoosePrescriptionsScreen />,
+    );
 
-    // @ts-ignore
-    const prescriptionList = UNSAFE_getAllByType('PrescriptionList')[0];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const prescriptionList = UNSAFE_getAllByType("PrescriptionList")[0];
 
     await act(async () => {
       prescriptionList.props.onToggleSelection(0);
@@ -164,7 +188,10 @@ describe('ChoosePrescriptionsScreen', () => {
     });
 
     await waitFor(() => {
-      expect(mockAgent.agent.modules.openId4VcHolderModule.acceptSiopAuthorizationRequest).toHaveBeenCalled();
+      expect(
+        mockAgent.agent.modules.openId4VcHolderModule
+          .acceptSiopAuthorizationRequest,
+      ).toHaveBeenCalled();
       expect(mockClear).toHaveBeenCalled();
       expect(mockRouter.push).toHaveBeenCalledWith("/Shared");
     });
@@ -173,13 +200,16 @@ describe('ChoosePrescriptionsScreen', () => {
   it("should display loading component when sharing is in progress", async () => {
     // Set up a delayed resolution to simulate loading state
     mockAgent.agent.modules.openId4VcHolderModule.acceptSiopAuthorizationRequest.mockImplementation(
-      () => new Promise(resolve => setTimeout(() => resolve({}), 100))
+      () => new Promise((resolve) => {}),
     );
 
-    const { UNSAFE_getAllByType, getByText, queryByText } = render(<ChoosePrescriptionsScreen />);
+    const { UNSAFE_getAllByType, getByText } = render(
+      <ChoosePrescriptionsScreen />,
+    );
 
-    // @ts-ignore
-    const prescriptionList = UNSAFE_getAllByType('PrescriptionList')[0];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const prescriptionList = UNSAFE_getAllByType("PrescriptionList")[0];
     await act(async () => {
       prescriptionList.props.onToggleSelection(0);
     });
@@ -188,11 +218,7 @@ describe('ChoosePrescriptionsScreen', () => {
       fireEvent.press(getByText("Share"));
     });
 
-    expect(screen.getByTestId('loading-indicator')).toBeTruthy();
-
-    await waitFor(() => {
-      expect(mockRouter.push).toHaveBeenCalledWith("/Shared");
-    });
+    expect(screen.getByTestId("loading-indicator")).toBeTruthy();
   });
 
   it("should handle cancel button press correctly", async () => {
@@ -208,19 +234,25 @@ describe('ChoosePrescriptionsScreen', () => {
 
   it("should redirect to NotShared when resolvedAuthorizationRequest is undefined", async () => {
     // Mock return value for useResolvedAuthorizationRequestStore
-    (useResolvedAuthorizationRequestStore as unknown as jest.Mock).mockImplementationOnce((selector) => {
+    (
+      useResolvedAuthorizationRequestStore as unknown as jest.Mock
+    ).mockImplementationOnce((selector) => {
       const store = {
         resolvedAuthorizationRequest: undefined,
-        clear: mockClear
+        clear: mockClear,
       };
       return selector(store);
     });
 
-    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
     render(<ChoosePrescriptionsScreen />);
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Resolved authorization request is undefined.");
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Resolved authorization request is undefined.",
+    );
     expect(Redirect).toHaveBeenCalledWith({ href: "/NotShared" }, {});
 
     consoleErrorSpy.mockRestore();
@@ -228,22 +260,28 @@ describe('ChoosePrescriptionsScreen', () => {
 
   it("should redirect to NotShared when presentationExchange is missing", async () => {
     // Mock return value for useResolvedAuthorizationRequestStore
-    (useResolvedAuthorizationRequestStore as unknown as jest.Mock).mockImplementationOnce((selector) => {
+    (
+      useResolvedAuthorizationRequestStore as unknown as jest.Mock
+    ).mockImplementationOnce((selector) => {
       const store = {
         resolvedAuthorizationRequest: {
-          authorizationRequest: { id: 'auth-request-1' },
-          presentationExchange: undefined
+          authorizationRequest: { id: "auth-request-1" },
+          presentationExchange: undefined,
         },
-        clear: mockClear
+        clear: mockClear,
       };
       return selector(store);
     });
 
-    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
     render(<ChoosePrescriptionsScreen />);
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Resolved authorization request has no presentation exchange.");
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Resolved authorization request has no presentation exchange.",
+    );
     expect(Redirect).toHaveBeenCalledWith({ href: "/NotShared" }, {});
 
     consoleErrorSpy.mockRestore();
@@ -251,27 +289,33 @@ describe('ChoosePrescriptionsScreen', () => {
 
   it("should redirect when requirements are not satisfied", async () => {
     // Mock return value for useResolvedAuthorizationRequestStore
-    (useResolvedAuthorizationRequestStore as unknown as jest.Mock).mockImplementationOnce((selector) => {
+    (
+      useResolvedAuthorizationRequestStore as unknown as jest.Mock
+    ).mockImplementationOnce((selector) => {
       const store = {
         resolvedAuthorizationRequest: {
-          authorizationRequest: { id: 'auth-request-1' },
+          authorizationRequest: { id: "auth-request-1" },
           presentationExchange: {
             credentialsForRequest: {
               areRequirementsSatisfied: false,
-              requirements: []
-            }
-          }
+              requirements: [],
+            },
+          },
         },
-        clear: mockClear
+        clear: mockClear,
       };
       return selector(store);
     });
 
-    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
     render(<ChoosePrescriptionsScreen />);
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Wallets credentials do not satisfy verification requirements.");
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Wallets credentials do not satisfy verification requirements.",
+    );
     expect(Redirect).toHaveBeenCalledWith({ href: "/NotShared" }, {});
 
     consoleErrorSpy.mockRestore();
@@ -280,8 +324,9 @@ describe('ChoosePrescriptionsScreen', () => {
   it("should correctly toggle prescription selection", async () => {
     const { UNSAFE_getAllByType } = render(<ChoosePrescriptionsScreen />);
 
-    // @ts-ignore
-    const prescriptionList = UNSAFE_getAllByType('PrescriptionList')[0];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const prescriptionList = UNSAFE_getAllByType("PrescriptionList")[0];
 
     expect(prescriptionList.props.selectedPrescriptions).toEqual([]);
 
@@ -299,15 +344,21 @@ describe('ChoosePrescriptionsScreen', () => {
   });
 
   it("should handle share failure and redirect to NotShared", async () => {
-    mockAgent.agent.modules.openId4VcHolderModule.acceptSiopAuthorizationRequest
-      .mockRejectedValueOnce(new Error("Sharing failed"));
+    mockAgent.agent.modules.openId4VcHolderModule.acceptSiopAuthorizationRequest.mockRejectedValueOnce(
+      new Error("Sharing failed"),
+    );
 
-    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
-    const { UNSAFE_getAllByType, getByText } = render(<ChoosePrescriptionsScreen />);
+    const { UNSAFE_getAllByType, getByText } = render(
+      <ChoosePrescriptionsScreen />,
+    );
 
-    // @ts-ignore
-    const prescriptionList = UNSAFE_getAllByType('PrescriptionList')[0];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const prescriptionList = UNSAFE_getAllByType("PrescriptionList")[0];
     await act(async () => {
       prescriptionList.props.onToggleSelection(0);
     });
@@ -318,7 +369,10 @@ describe('ChoosePrescriptionsScreen', () => {
     });
 
     await waitFor(() => {
-      expect(mockAgent.agent.modules.openId4VcHolderModule.acceptSiopAuthorizationRequest).toHaveBeenCalled();
+      expect(
+        mockAgent.agent.modules.openId4VcHolderModule
+          .acceptSiopAuthorizationRequest,
+      ).toHaveBeenCalled();
       expect(mockClear).toHaveBeenCalled();
       expect(consoleErrorSpy).toHaveBeenCalled();
       expect(mockRouter.push).toHaveBeenCalledWith("/NotShared");
@@ -335,26 +389,27 @@ describe('ChoosePrescriptionsScreen', () => {
     });
 
     render(<ChoosePrescriptionsScreen />);
-    expect(screen.getByTestId('loading-indicator')).toBeTruthy();
+    expect(screen.getByTestId("loading-indicator")).toBeTruthy();
   });
 
   it("should pass the correct props to PrescriptionList component", async () => {
     const { UNSAFE_getAllByType } = render(<ChoosePrescriptionsScreen />);
 
-    // @ts-ignore
-    const prescriptionList = UNSAFE_getAllByType('PrescriptionList')[0];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const prescriptionList = UNSAFE_getAllByType("PrescriptionList")[0];
 
     expect(prescriptionList.props.prescriptions).toHaveLength(2);
-    expect(prescriptionList.props.prescriptions[0].id).toBe('credential-1');
-    expect(prescriptionList.props.prescriptions[1].id).toBe('credential-2');
+    expect(prescriptionList.props.prescriptions[0].id).toBe("credential-1");
+    expect(prescriptionList.props.prescriptions[1].id).toBe("credential-2");
 
     expect(prescriptionList.props.issuerNames).toEqual({
-      'issuer-1': 'Issuer 1',
-      'issuer-2': 'Issuer 2'
+      "issuer-1": "Issuer 1",
+      "issuer-2": "Issuer 2",
     });
 
     expect(prescriptionList.props.selectedPrescriptions).toEqual([]);
 
-    expect(typeof prescriptionList.props.onToggleSelection).toBe('function');
+    expect(typeof prescriptionList.props.onToggleSelection).toBe("function");
   });
 });
