@@ -3,7 +3,7 @@ import { render, fireEvent, waitFor } from "@testing-library/react-native";
 import { Redirect, useRouter } from "expo-router";
 
 import { storeCredentialsWithAgent } from "@/agent/Vc";
-import DeclineAcceptScreen from "@/app/(tabs)/(addPrescriptions)//DeclineAcceptScreen";
+import DeclineAcceptScreen from "@/app/(tabs)/(addPrescriptions)/DeclineAcceptScreen";
 import { useCredentialResponsesStore } from "@/state/CredentialResponsesStore";
 import { useIssuerInfoStore } from "@/state/IssuerInfoStore";
 

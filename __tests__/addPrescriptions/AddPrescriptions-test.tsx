@@ -7,7 +7,7 @@ import {
 import { useRouter } from "expo-router";
 import React from "react";
 
-import AddPrescriptions from "../app/(tabs)/(addPrescriptions)/index";
+import AddPrescriptions from "../../app/(tabs)/(addPrescriptions)";
 
 jest.mock("expo-router", () => ({
   useRouter: jest.fn(),
