@@ -5,5 +5,5 @@
  * @returns The modified string
  */
 export function secureStoreKeyFromUserSub(sub: string) {
-  return sub.replaceAll("|", "-");
+  return sub.replaceAll(/\W/g, "-");
 }
