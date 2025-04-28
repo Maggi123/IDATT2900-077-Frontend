@@ -43,6 +43,7 @@ jest.mock("@/components/QRCodeScannerComponent", () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { TouchableOpacity, Text } = require("react-native");
 
+  // @ts-ignore
   return function MockQRCodeScanner({ onScan }) {
     return React.createElement(
       TouchableOpacity,
@@ -77,22 +78,22 @@ describe("QRCodeScreen", () => {
     const mockRouter = {
       push: jest.fn(),
     };
-    useRouter.mockReturnValue(mockRouter);
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
     const mockAgent = {
       agent: {},
     };
-    useAgent.mockReturnValue(mockAgent);
+    (useAgent as jest.Mock).mockReturnValue(mockAgent);
 
     const mockQueryClient = {
       invalidateQueries: jest.fn().mockResolvedValue(null),
     };
-    useQueryClient.mockReturnValue(mockQueryClient);
+    (useQueryClient as jest.Mock).mockReturnValue(mockQueryClient);
 
     const mockSetCredentialResponses = jest.fn();
     const mockSetIssuerInfo = jest.fn();
-    useCredentialResponsesStore.mockReturnValue(mockSetCredentialResponses);
-    useIssuerInfoStore.mockReturnValue(mockSetIssuerInfo);
+    (useCredentialResponsesStore as unknown as jest.Mock).mockReturnValue(mockSetCredentialResponses);
+    (useIssuerInfoStore as unknown as jest.Mock).mockReturnValue(mockSetIssuerInfo);
   });
 
   test("should render QRCodeScannerComponent when not in receiving state", () => {
@@ -106,7 +107,7 @@ describe("QRCodeScreen", () => {
       resolvePromise = resolve;
     });
 
-    resolveAndGetCredentialsWithAgent.mockReturnValue(delayedPromise);
+    (resolveAndGetCredentialsWithAgent as jest.Mock).mockReturnValue(delayedPromise);
 
     const { getByTestId, findByTestId } = render(<QRCodeScreen />);
 
@@ -137,11 +138,11 @@ describe("QRCodeScreen", () => {
     };
     const mockIssuerName = "Test Issuer";
 
-    resolveAndGetCredentialsWithAgent.mockResolvedValue([
+    (resolveAndGetCredentialsWithAgent as jest.Mock).mockResolvedValue([
       mockResolvedOffer,
       mockCredentialResponses,
     ]);
-    storeIssuerNameFromOfferWithAgent.mockResolvedValue(mockIssuerName);
+    (storeIssuerNameFromOfferWithAgent as jest.Mock).mockResolvedValue(mockIssuerName);
 
     const { getByTestId } = render(<QRCodeScreen />);
 
@@ -163,7 +164,7 @@ describe("QRCodeScreen", () => {
   });
 
   test("should handle case when no credentials are received", async () => {
-    resolveAndGetCredentialsWithAgent.mockResolvedValue([{}, []]);
+    (resolveAndGetCredentialsWithAgent as jest.Mock).mockResolvedValue([{}, []]);
     const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
 
     const { getByTestId } = render(<QRCodeScreen />);
@@ -184,7 +185,7 @@ describe("QRCodeScreen", () => {
       { credential: { credential: { issuerId: "issuer-2" } } },
     ];
 
-    resolveAndGetCredentialsWithAgent.mockResolvedValue([
+    (resolveAndGetCredentialsWithAgent as jest.Mock).mockResolvedValue([
       {},
       multipleCredentials,
     ]);
