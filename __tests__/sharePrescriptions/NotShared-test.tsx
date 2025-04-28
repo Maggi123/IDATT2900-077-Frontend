@@ -17,7 +17,9 @@ describe("NotShared", () => {
   it("should display the error message", () => {
     render(<NotShared />);
 
-    expect(screen.getByText("An error occurred while sharing document(s)")).toBeTruthy();
+    expect(
+      screen.getByText("An error occurred while sharing document(s)"),
+    ).toBeTruthy();
   });
 
   it("should navigate to the sharePrescriptions screen when 'Ok' is pressed", () => {
