@@ -17,7 +17,7 @@ jest.mock("expo-router");
 jest.mock("expo-secure-store");
 jest.mock("expo-crypto");
 
-const mockPush = jest.fn();
+const mockReplace = jest.fn();
 const mockAuthorize = jest.fn().mockResolvedValue({
   access_token: "mock-token",
 });
@@ -33,7 +33,7 @@ const mockGetRandomBytesAsync = jest
 });
 
 (useRouter as jest.Mock).mockReturnValue({
-  push: mockPush,
+  replace: mockReplace,
 });
 
 (SecureStore.setItemAsync as jest.Mock).mockImplementation(mockSetItemAsync);
@@ -71,7 +71,7 @@ describe("RegisterScreen", () => {
 
     await waitFor(() => {
       expect(mockAuthorize).toHaveBeenCalledTimes(1);
-      expect(mockPush).toHaveBeenCalledWith("/HomeScreen");
+      expect(mockReplace).toHaveBeenCalledWith("/HomeScreen");
       expect(SecureStore.setItemAsync).toHaveBeenCalledWith("registered", "1");
     });
   });
