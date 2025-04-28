@@ -92,6 +92,23 @@ describe("HomeScreen", () => {
     });
   });
 
+  test("should navigate to sharePrescriptions screen when 'Share prescriptions' button is pressed", async () => {
+    (useQuery as jest.Mock).mockReturnValue({
+      isPending: false,
+      data: "did:indy:123",
+    });
+
+    render(<HomeScreen />);
+
+    const button = screen.getByText("Share prescriptions");
+    fireEvent.press(button);
+
+    await waitFor(() => {
+      expect(mockPush).toHaveBeenCalledWith("/(tabs)/(sharePrescriptions)");
+    });
+  });
+
+
   test("should call getCreatedDids with correct parameters", async () => {
     // Capture the queryFn passed to useQuery
     let capturedQueryFn: any;
