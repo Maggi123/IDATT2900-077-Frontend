@@ -68,7 +68,7 @@ describe("LoginScreen", () => {
       jest.spyOn(SecureStore, "getItemAsync").mockResolvedValue("some-key");
 
       (useRouter as jest.Mock).mockReturnValue({
-        push: mockPush,
+        replace: mockPush,
       });
       render(<LoginScreen />);
 

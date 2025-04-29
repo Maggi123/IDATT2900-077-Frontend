@@ -45,4 +45,13 @@ describe("secureStoreKeyFromUserSub", () => {
 
     expect(result).toBe(expectedOutput);
   });
+
+  it("should replace any none alphanumeric characters with '-'", () => {
+    const inputSub = "user=sub?example!";
+    const expectedOutput = "user-sub-example-";
+
+    const result = secureStoreKeyFromUserSub(inputSub);
+
+    expect(result).toBe(expectedOutput);
+  });
 });

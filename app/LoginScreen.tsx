@@ -43,7 +43,7 @@ export default function LoginScreen() {
           throw new Error(
             "User did not authenticate with OpenID account during login.",
           );
-        router.push("/HomeScreen");
+        router.replace("/HomeScreen");
       }
     };
 

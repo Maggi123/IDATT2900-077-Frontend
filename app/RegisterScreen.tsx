@@ -43,7 +43,7 @@ export default function RegisterScreen() {
           throw new Error(
             "User did not authenticate with OpenID account during registering.",
           );
-        router.push("/HomeScreen");
+        router.replace("/HomeScreen");
       }
     };
 
