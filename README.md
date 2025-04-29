@@ -4,6 +4,10 @@
 - Set up the [Android Emulator](https://docs.expo.dev/workflow/android-studio-emulator/).
 - Set up the [backend](https://github.com/Maggi123/IDATT2900-077-Backend).
 
+## Dependencies
+- Node.js v. 18.18.x
+- Yarn
+
 ## Get started
 
 1. Install dependencies
