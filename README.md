@@ -16,8 +16,12 @@
    ```bash
    yarn install
    ```
+2. Generate native folders
+   ```bash
+    yarn prebuild
+   ```
 
-2. Start the app in an Android Emulator
+3. Start the app in an Android Emulator
 
    ```bash
     yarn android
