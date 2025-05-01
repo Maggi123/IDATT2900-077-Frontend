@@ -9,7 +9,6 @@ import {
 import { useRouter } from "expo-router";
 
 import HomeScreen from "@/app/(tabs)/HomeScreen";
-import { Colors } from "@/constants/Colors";
 
 jest.mock("expo-router", () => ({ useRouter: jest.fn() }));
 jest.mock("@tanstack/react-query", () => ({ useQuery: jest.fn() }));
@@ -107,7 +106,6 @@ describe("HomeScreen", () => {
       expect(mockPush).toHaveBeenCalledWith("/(tabs)/(sharePrescriptions)");
     });
   });
-
 
   test("should call getCreatedDids with correct parameters", async () => {
     // Capture the queryFn passed to useQuery

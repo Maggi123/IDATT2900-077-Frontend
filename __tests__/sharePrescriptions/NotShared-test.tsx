@@ -1,6 +1,7 @@
 import { render, fireEvent, screen } from "@testing-library/react-native";
-import NotShared from "@/app/(tabs)/(sharePrescriptions)/NotShared";
 import { useRouter } from "expo-router";
+
+import NotShared from "@/app/(tabs)/(sharePrescriptions)/NotShared";
 
 jest.mock("expo-router", () => ({
   useRouter: jest.fn(),
