@@ -161,7 +161,7 @@ export async function storeIssuerNameFromOfferWithAgent(
   agent: Agent,
   resolvedOffer: OpenId4VciResolvedCredentialOffer,
   issuerDid: string,
-) {
+): Promise<string> {
   const issuerName = resolvedOffer.metadata.credentialIssuerMetadata.display
     ? (resolvedOffer.metadata.credentialIssuerMetadata.display[0].name ?? "N/A")
     : "N/A";
