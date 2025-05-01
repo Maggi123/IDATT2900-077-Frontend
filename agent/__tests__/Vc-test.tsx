@@ -3,6 +3,7 @@ import {
   W3cJwtVerifiableCredential,
   W3cJsonLdVerifiableCredential,
   DidRecord,
+  W3cCredentialRecord,
 } from "@credo-ts/core";
 import {
   OpenId4VciCredentialResponse,
@@ -15,6 +16,7 @@ import {
   resolveAndGetCredentialsWithAgent,
   storeCredentialsWithAgent,
   storeIssuerNameFromOfferWithAgent,
+  storeVerifierNameVcIsSharedWith,
 } from "@/agent/Vc";
 
 jest.mock("@credo-ts/core");
@@ -46,10 +48,14 @@ describe("OpenID4VC Credential Functions", () => {
       },
       genericRecords: {
         save: jest.fn(),
+        update: jest.fn(),
+        findById: jest.fn(),
       },
       config: {
         logger: {
           debug: jest.fn(),
+          error: jest.fn(),
+          info: jest.fn(),
         },
       },
     } as unknown as jest.Mocked<Agent>;
@@ -96,7 +102,7 @@ describe("OpenID4VC Credential Functions", () => {
     agent.modules.openId4VcHolderModule.requestCredentials.mockResolvedValue(
       mockCredentialResponse,
     );
-    agent.dids.getCreatedDids.mockResolvedValue([mockDid]);
+    (agent.dids.getCreatedDids as jest.Mock).mockResolvedValue([mockDid]);
   });
 
   describe("resolveCredentialOfferWithAgent", () => {
@@ -308,7 +314,7 @@ describe("OpenID4VC Credential Functions", () => {
       const issuerDid = "did:indy:issuer123";
       const error = new Error("Failed to save");
 
-      agent.genericRecords.save.mockRejectedValueOnce(error);
+      (agent.genericRecords.save as jest.Mock).mockRejectedValueOnce(error);
 
       const result = await storeIssuerNameFromOfferWithAgent(
         agent,
@@ -321,6 +327,118 @@ describe("OpenID4VC Credential Functions", () => {
       );
 
       expect(result).toBe("Test Issuer");
+    });
+  });
+
+  describe("storeVerifierNameVcIsSharedWith", () => {
+    const mockCredentialRecord = {
+      id: "credential-id",
+    } as unknown as W3cCredentialRecord;
+
+    it("should store verifier name if a record for the credential does not exist", async () => {
+      (agent.genericRecords.findById as jest.Mock).mockRejectedValue(
+        new Error("does not exist"),
+      );
+
+      const verifierName = "Test Verifier";
+      await storeVerifierNameVcIsSharedWith(
+        agent,
+        mockCredentialRecord,
+        verifierName,
+      );
+
+      expect(agent.config.logger.debug).toHaveBeenCalled();
+      expect(agent.genericRecords.save).toHaveBeenCalledWith({
+        id: mockCredentialRecord.id,
+        content: {
+          names: ["Test Verifier"],
+        },
+      });
+    });
+
+    it("should log errors when saving generic record fails when a record for the credential does not exist", async () => {
+      (agent.genericRecords.findById as jest.Mock).mockRejectedValue(
+        new Error("does not exist"),
+      );
+
+      const verifierName = "Test Verifier";
+      const error = new Error("Failed to save");
+
+      (agent.genericRecords.save as jest.Mock).mockRejectedValueOnce(error);
+
+      await storeVerifierNameVcIsSharedWith(
+        agent,
+        mockCredentialRecord,
+        verifierName,
+      );
+
+      expect(agent.config.logger.debug).toHaveBeenCalled();
+      expect(agent.config.logger.error).toHaveBeenCalledWith(
+        expect.stringContaining(
+          "Unable to store verifier name Test Verifier for verifiable credential with id credential-id. Cause:",
+        ),
+        expect.objectContaining(new Error("Failed to save")),
+      );
+    });
+
+    it("should try to update a record if it exists for the credential", async () => {
+      (agent.genericRecords.findById as jest.Mock).mockResolvedValue({
+        id: mockCredentialRecord.id,
+        content: {
+          names: ["Test Verifier"],
+        },
+      });
+
+      const verifierName = "Test 2 Verifier";
+
+      await storeVerifierNameVcIsSharedWith(
+        agent,
+        mockCredentialRecord,
+        verifierName,
+      );
+
+      expect(agent.config.logger.debug).not.toHaveBeenCalled();
+      expect(agent.genericRecords.update).toHaveBeenCalledWith({
+        id: mockCredentialRecord.id,
+        content: {
+          names: ["Test Verifier", "Test 2 Verifier"],
+        },
+      });
+    });
+
+    it("should log error if an attempted record update fails", async () => {
+      (agent.genericRecords.findById as jest.Mock).mockResolvedValue({
+        id: mockCredentialRecord.id,
+        content: {
+          names: ["Test Verifier"],
+        },
+      });
+
+      (agent.genericRecords.update as jest.Mock).mockRejectedValue(
+        new Error("Update failed"),
+      );
+
+      const verifierName = "Test 2 Verifier";
+
+      await storeVerifierNameVcIsSharedWith(
+        agent,
+        mockCredentialRecord,
+        verifierName,
+      );
+
+      expect(agent.config.logger.debug).not.toHaveBeenCalled();
+      expect(agent.genericRecords.update).toHaveBeenCalledWith({
+        id: mockCredentialRecord.id,
+        content: {
+          names: ["Test Verifier", "Test 2 Verifier"],
+        },
+      });
+      expect(agent.config.logger.error).toHaveBeenCalledWith(
+        expect.stringContaining(
+          "Unable to store verifier name Test 2 Verifier for verifiable credential with id credential-id. Cause:",
+        ),
+        expect.objectContaining(new Error("Update failed")),
+      );
     });
   });
 });
