@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { View, StyleSheet } from "react-native";
 
-import NavigationOptionButton from "@/components/NavigationOptionButton";
+import NavigationOptionButton from "@/components/buttons/NavigationOptionButton";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 /**

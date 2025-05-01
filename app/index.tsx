@@ -26,7 +26,7 @@ export default function Index() {
     <View style={styles.container}>
       {!registered && (
         <TouchableOpacity
-          style={defaultStyles.button}
+          style={styles.button}
           onPress={() => {
             router.push("/RegisterScreen");
           }}
@@ -36,7 +36,7 @@ export default function Index() {
       )}
       {registered && (
         <TouchableOpacity
-          style={defaultStyles.button}
+          style={styles.button}
           onPress={() => {
             router.push("/LoginScreen");
           }}
@@ -53,5 +53,9 @@ const styles = StyleSheet.create({
     ...defaultStyles.container,
     justifyContent: "center",
     gap: 10,
+  },
+  button: {
+    ...defaultStyles.button,
+    alignItems: "center",
   },
 });

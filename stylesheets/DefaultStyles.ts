@@ -18,13 +18,18 @@ export const defaultStyles = StyleSheet.create({
     color: Colors.text,
     fontWeight: "bold",
   },
+  undertitle: {
+    fontSize: 20,
+    color: Colors.text,
+    fontWeight: "bold",
+  },
   button: {
     width: "90%",
     backgroundColor: Colors.button,
     paddingVertical: 10,
     borderRadius: 20,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   buttonContent: {
     flexDirection: "row",
