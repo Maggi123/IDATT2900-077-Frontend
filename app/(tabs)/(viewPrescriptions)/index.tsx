@@ -124,6 +124,7 @@ export default function ViewPrescriptions() {
           <p><strong>Authored On:</strong> ${new Date(item.authoredOn).toLocaleDateString()}</p>
           <p><strong>Expires:</strong> ${new Date(item.expires).toLocaleDateString()}</p>
           <p><strong>Added:</strong> ${new Date(item.added).toLocaleDateString()}</p>
+          <p><strong>Shared with:</strong><br> ${item.sharedWith.length > 0 ? item.sharedWith.join("<br>") : "N/A"}</p>
         </div>
       `,
       )
@@ -152,6 +153,7 @@ export default function ViewPrescriptions() {
             authoredOn: item.claims?.authoredOn ?? "N/A",
             expires: credential.credential.expirationDate ?? "N/A",
             added: credential.createdAt,
+            sharedWith: verifierNames.data[credential.id] ?? [],
           }));
       });
 
