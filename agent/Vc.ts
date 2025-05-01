@@ -182,6 +182,13 @@ export async function storeIssuerNameFromOfferWithAgent(
   return issuerName;
 }
 
+/**
+ * Stores the name of a verifier a verifiable credential is shared with in the agent's generic records.
+ *
+ * @param {Agent} agent - The agent instance where the verifier name will be stored.
+ * @param {W3cCredentialRecord} vc - The verifiable credential record to associate the verifier name with.
+ * @param {string} name - The name of the verifier.
+ */
 export async function storeVerifierNameVcIsSharedWith(
   agent: Agent,
   vc: W3cCredentialRecord,
@@ -192,13 +199,15 @@ export async function storeVerifierNameVcIsSharedWith(
     vcNameRecord = await agent.genericRecords.findById(vc.id);
   } catch (error) {
     agent.config.logger.info(
-      `Verifiable credential with id ${vc.id} has names stored. Adding new name to record...`,
+      `Verifiable credential with id ${vc.id} has no names stored. Adding new name to record...`,
     );
     if (error instanceof Error) agent.config.logger.debug("Cause:", error);
   }
 
   if (vcNameRecord) {
     try {
+      // Check if the name is already in the record
+      // This is to reduce clutter when displaying the list of verifiers a credential is shared with
       if (!(vcNameRecord.content.names as string[]).includes(name)) {
         (vcNameRecord.content.names as string[]).push(name);
         await agent.genericRecords.update(vcNameRecord);

@@ -45,6 +45,7 @@ export default function ViewPrescriptions() {
       agentContext.agent.genericRecords.getAll().then((records) => {
         const issuerNames: Record<string, unknown> = {};
         for (const record of records) {
+          // General records containing the name field are issuer name records.
           if (record.content.name) issuerNames[record.id] = record.content.name;
         }
         return issuerNames;
@@ -57,6 +58,8 @@ export default function ViewPrescriptions() {
       agentContext.agent.genericRecords.getAll().then((records) => {
         const verifierNames: Record<string, string[]> = {};
         for (const record of records) {
+          // General records containing the names field are records containing
+          // a list of verifier names a credential has been shared with.
           if (record.content.names)
             verifierNames[record.id] = record.content.names as string[];
         }
