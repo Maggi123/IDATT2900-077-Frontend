@@ -19,6 +19,8 @@ type PrescriptionListProps = {
   selectedPrescriptions: number[];
   /** Function to toggle the selection of a prescription. */
   onToggleSelection: (id: number) => void;
+  /** Names of verifiers a prescription is shared with */
+  verifierNames?: Record<string, string[]>;
 };
 
 /**
@@ -34,6 +36,7 @@ const PrescriptionList = ({
   issuerNames,
   selectedPrescriptions,
   onToggleSelection,
+  verifierNames,
 }: PrescriptionListProps) => {
   return (
     <SectionList
@@ -105,6 +108,14 @@ const PrescriptionList = ({
               {prescriptions[section.title].createdAt.toLocaleDateString()}
             </Text>
           </View>
+          {verifierNames?.[prescriptions[section.title].id] && (
+            <View style={styles.detailRow}>
+              <Text style={styles.detailTitle}>Shared with: </Text>
+              <Text style={styles.detail}>
+                {verifierNames[prescriptions[section.title].id].join("\n")}
+              </Text>
+            </View>
+          )}
         </View>
       )}
     />
