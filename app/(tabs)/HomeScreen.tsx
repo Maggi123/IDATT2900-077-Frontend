@@ -1,11 +1,10 @@
 import { useAgent } from "@credo-ts/react-hooks";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 
 import LoadingComponent from "@/components/LoadingComponent";
-import { Colors } from "@/constants/Colors";
+import HomeScreenButton from "@/components/buttons/HomeScreenButton";
 import { defaultStyles } from "@/stylesheets/DefaultStyles";
 
 /**
@@ -50,52 +49,31 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{did.data}</Text>
-      <TouchableOpacity
-        style={styles.button}
+      <View style={defaultStyles.overlay}>
+        <Text style={defaultStyles.undertitle}>Your DID</Text>
+        <Text style={defaultStyles.overlayText}>{did.data}</Text>
+      </View>
+      <HomeScreenButton
+        icon="plus-circle-outline"
+        text="Add prescriptions"
         onPress={() => {
           handleButtonPress("Button 1");
         }}
-      >
-        <View style={styles.buttonContent}>
-          <MaterialCommunityIcons
-            name="plus-circle-outline"
-            size={40}
-            color={Colors.lightpink}
-          />
-          <Text style={styles.buttonText}>Add prescriptions</Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
+      />
+      <HomeScreenButton
+        icon="folder-outline"
+        text="View prescriptions"
         onPress={() => {
           handleButtonPress("Button 2");
         }}
-      >
-        <View style={styles.buttonContent}>
-          <MaterialCommunityIcons
-            name="folder-outline"
-            size={40}
-            color={Colors.lightpink}
-          />
-          <Text style={styles.buttonText}>View prescriptions</Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
+      />
+      <HomeScreenButton
+        icon="share-variant-outline"
+        text="Share prescriptions"
         onPress={() => {
           handleButtonPress("Button 3");
         }}
-      >
-        <View style={styles.buttonContent}>
-          <MaterialCommunityIcons
-            name="share-variant-outline"
-            size={40}
-            color={Colors.lightpink}
-          />
-          <Text style={styles.buttonText}>Share prescriptions</Text>
-        </View>
-      </TouchableOpacity>
+      />
     </View>
   );
 }
@@ -105,28 +83,5 @@ const styles = StyleSheet.create({
     ...defaultStyles.container,
     justifyContent: "center",
     gap: 20,
-  },
-  button: {
-    width: "90%",
-    backgroundColor: Colors.button,
-    paddingVertical: 10,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "flex-start",
-  },
-  buttonContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 10,
-    paddingHorizontal: 15,
-    gap: 10,
-  },
-  buttonText: {
-    color: Colors.lightpink,
-    fontSize: 30,
-  },
-  text: {
-    fontSize: 18,
   },
 });
