@@ -73,6 +73,11 @@ const mockIssuerNames = {
   "issuer-2": "PharmaCare",
 };
 
+const mockVerifierNames = {
+  "cred-1": ["Trusted Hospital"],
+  "cred-2": ["Government"],
+};
+
 describe("ViewPrescriptions Screen", () => {
   beforeEach(() => {
     (useQuery as jest.Mock).mockImplementation(({ queryKey }) => {
@@ -80,6 +85,8 @@ describe("ViewPrescriptions Screen", () => {
         return { data: mockPrescriptions, isSuccess: true, isPending: false };
       } else if (queryKey[0] === "issuerNames") {
         return { data: mockIssuerNames, isSuccess: true, isPending: false };
+      } else if (queryKey[0] === "verifierNames") {
+        return { data: mockVerifierNames, isSuccess: true, isPending: false };
       }
     });
     (printToFileAsync as jest.Mock).mockResolvedValue({
@@ -89,13 +96,14 @@ describe("ViewPrescriptions Screen", () => {
     (Sharing.shareAsync as jest.Mock).mockResolvedValue(undefined);
   });
 
-  test("should render prescription name, issuer, and dates correctly", async () => {
+  test("should render prescription name, issuer, verifiers and dates correctly", async () => {
     const { getByText, getAllByText } = render(<ViewPrescriptions />);
 
     const nameMatches = getAllByText("Paracetamol");
     await waitFor(() => {
       expect(nameMatches).toHaveLength(2);
       expect(getByText("Trusted Health Org")).toBeTruthy();
+      expect(getByText("Trusted Hospital")).toBeTruthy();
       expect(
         getByText(new Date("3/20/2024").toLocaleDateString()),
       ).toBeTruthy();
@@ -157,6 +165,8 @@ describe("ViewPrescriptions Screen", () => {
       if (queryKey[0] === "prescription") {
         return { data: [], isSuccess: true, isPending: false };
       } else if (queryKey[0] === "issuerNames") {
+        return { data: {}, isSuccess: true, isPending: false };
+      } else if (queryKey[0] === "verifierNames") {
         return { data: {}, isSuccess: true, isPending: false };
       }
     });
@@ -224,6 +234,8 @@ describe("ViewPrescriptions error handling", () => {
         return { data: null, isSuccess: false, isPending: false }; // Simulate error state
       } else if (queryKey[0] === "issuerNames") {
         return { data: mockIssuerNames, isSuccess: true, isPending: false };
+      } else if (queryKey[0] === "verifierNames") {
+        return { data: mockVerifierNames, isSuccess: true, isPending: false };
       }
     });
 
@@ -238,6 +250,8 @@ describe("ViewPrescriptions error handling", () => {
         return { data: mockPrescriptions, isSuccess: true, isPending: false };
       } else if (queryKey[0] === "issuerNames") {
         return { data: null, isSuccess: false, isPending: true };
+      } else if (queryKey[0] === "verifierNames") {
+        return { data: mockVerifierNames, isSuccess: true, isPending: false };
       }
     });
 
@@ -252,6 +266,40 @@ describe("ViewPrescriptions error handling", () => {
         return { data: mockPrescriptions, isSuccess: true, isPending: false };
       } else if (queryKey[0] === "issuerNames") {
         return { data: null, isSuccess: false, isPending: false };
+      } else if (queryKey[0] === "verifierNames") {
+        return { data: mockVerifierNames, isSuccess: true, isPending: false };
+      }
+    });
+
+    const { getByText } = render(<ViewPrescriptions />);
+
+    expect(getByText("Something went wrong fetching data.")).toBeTruthy();
+  });
+
+  test("should display loading indicator when verifier names data is loading", async () => {
+    (useQuery as jest.Mock).mockImplementation(({ queryKey }) => {
+      if (queryKey[0] === "prescription") {
+        return { data: mockPrescriptions, isSuccess: true, isPending: false };
+      } else if (queryKey[0] === "issuerNames") {
+        return { data: mockIssuerNames, isSuccess: true, isPending: false };
+      } else if (queryKey[0] === "verifierNames") {
+        return { data: {}, isSuccess: false, isPending: true };
+      }
+    });
+
+    render(<ViewPrescriptions />);
+
+    expect(screen.getByTestId("loading-indicator")).toBeTruthy();
+  });
+
+  test("should display error message when verifier names data fetch fails", async () => {
+    (useQuery as jest.Mock).mockImplementation(({ queryKey }) => {
+      if (queryKey[0] === "prescription") {
+        return { data: mockPrescriptions, isSuccess: true, isPending: false };
+      } else if (queryKey[0] === "issuerNames") {
+        return { data: mockIssuerNames, isSuccess: true, isPending: false };
+      } else if (queryKey[0] === "verifierNames") {
+        return { data: {}, isSuccess: false, isPending: false };
       }
     });
 
@@ -266,6 +314,8 @@ describe("ViewPrescriptions error handling", () => {
         return { data: mockPrescriptions, isSuccess: true, isPending: false };
       } else if (queryKey[0] === "issuerNames") {
         return { data: mockIssuerNames, isSuccess: true, isPending: false };
+      } else if (queryKey[0] === "verifierNames") {
+        return { data: mockVerifierNames, isSuccess: true, isPending: false };
       }
     });
 
@@ -291,6 +341,8 @@ describe("ViewPrescriptions error handling", () => {
         return { data: mockPrescriptions, isSuccess: true, isPending: false };
       } else if (queryKey[0] === "issuerNames") {
         return { data: mockIssuerNames, isSuccess: true, isPending: false };
+      } else if (queryKey[0] === "verifierNames") {
+        return { data: mockVerifierNames, isSuccess: true, isPending: false };
       }
     });
 

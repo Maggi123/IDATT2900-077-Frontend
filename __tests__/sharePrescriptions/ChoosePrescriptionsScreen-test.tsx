@@ -10,6 +10,7 @@ import {
 } from "@testing-library/react-native";
 import { Redirect, useRouter } from "expo-router";
 
+import { storeVerifierNameVcIsSharedWith } from "@/agent/Vc";
 import ChoosePrescriptionsScreen from "@/app/(tabs)/(sharePrescriptions)/ChoosePrescriptionsScreen";
 import { useResolvedAuthorizationRequestStore } from "@/state/ResolvedAuthorizationRequestStore";
 
@@ -20,6 +21,9 @@ jest.mock("expo-router", () => ({
 
 jest.mock("@tanstack/react-query", () => ({
   useQuery: jest.fn(),
+  useQueryClient: jest.fn().mockReturnValue({
+    invalidateQueries: jest.fn(),
+  }),
 }));
 
 jest.mock("@credo-ts/react-hooks", () => ({
@@ -28,6 +32,10 @@ jest.mock("@credo-ts/react-hooks", () => ({
 
 jest.mock("@/state/ResolvedAuthorizationRequestStore", () => ({
   useResolvedAuthorizationRequestStore: jest.fn(),
+}));
+
+jest.mock("@/agent/Vc", () => ({
+  storeVerifierNameVcIsSharedWith: jest.fn(),
 }));
 
 jest.mock("@/components/PrescriptionList", () => "PrescriptionList");
@@ -69,7 +77,12 @@ describe("ChoosePrescriptionsScreen", () => {
     ).mockImplementation((selector) => {
       const store = {
         resolvedAuthorizationRequest: {
-          authorizationRequest: { id: "auth-request-1" },
+          authorizationRequest: {
+            id: "auth-request-1",
+            registrationMetadataPayload: {
+              client_name: "name",
+            },
+          },
           presentationExchange: {
             credentialsForRequest: {
               areRequirementsSatisfied: true,
@@ -193,6 +206,7 @@ describe("ChoosePrescriptionsScreen", () => {
           .acceptSiopAuthorizationRequest,
       ).toHaveBeenCalled();
       expect(mockClear).toHaveBeenCalled();
+      expect(storeVerifierNameVcIsSharedWith).toHaveBeenCalled();
       expect(mockRouter.push).toHaveBeenCalledWith("/Shared");
     });
   });
