@@ -2,6 +2,7 @@ import {
   Agent,
   W3cJwtVerifiableCredential,
   W3cJsonLdVerifiableCredential,
+  W3cCredentialRecord,
 } from "@credo-ts/core";
 import {
   OpenId4VciCredentialBindingOptions,
@@ -179,4 +180,54 @@ export async function storeIssuerNameFromOfferWithAgent(
   }
 
   return issuerName;
+}
+
+export async function storeVerifierNameVcIsSharedWith(
+  agent: Agent,
+  vc: W3cCredentialRecord,
+  name: string,
+) {
+  let vcNameRecord;
+  try {
+    vcNameRecord = await agent.genericRecords.findById(vc.id);
+  } catch (error) {
+    agent.config.logger.info(
+      `Verifiable credential with id ${vc.id} has names stored. Adding new name to record...`,
+    );
+    if (error instanceof Error) agent.config.logger.debug("Cause:", error);
+  }
+
+  if (vcNameRecord) {
+    try {
+      if (!(vcNameRecord.content.names as string[]).includes(name)) {
+        (vcNameRecord.content.names as string[]).push(name);
+        await agent.genericRecords.update(vcNameRecord);
+        agent.config.logger.info(
+          `Added name ${name} to existing record for verifiable credential with id ${vc.id}.`,
+        );
+      }
+    } catch (error) {
+      if (error instanceof Error)
+        agent.config.logger.error(
+          `Unable to store verifier name ${name} for verifiable credential with id ${vc.id}. Cause:`,
+          error,
+        );
+    }
+    return;
+  }
+
+  try {
+    await agent.genericRecords.save({
+      id: vc.id,
+      content: {
+        names: [name],
+      },
+    });
+  } catch (error) {
+    if (error instanceof Error)
+      agent.config.logger.error(
+        `Unable to store verifier name ${name} for verifiable credential with id ${vc.id}. Cause:`,
+        error,
+      );
+  }
 }
