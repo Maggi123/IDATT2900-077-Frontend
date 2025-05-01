@@ -5,11 +5,12 @@ import {
 } from "@credo-ts/core";
 import { useAgent } from "@credo-ts/react-hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Redirect, useRouter } from "expo-router";
 import { useState } from "react";
 import { Text, View, Pressable, StyleSheet } from "react-native";
 
+import { storeVerifierNameVcIsSharedWith } from "@/agent/Vc";
 import LoadingComponent from "@/components/LoadingComponent";
 import PrescriptionList from "@/components/PrescriptionList";
 import { useResolvedAuthorizationRequestStore } from "@/state/ResolvedAuthorizationRequestStore";
@@ -32,6 +33,7 @@ export default function ChoosePrescriptionsScreen() {
   const [sharingState, setSharingState] = useState<boolean>(false);
   const agentContext = useAgent();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const resolvedAuthorizationRequest = useResolvedAuthorizationRequestStore(
     ({ resolvedAuthorizationRequest }) => resolvedAuthorizationRequest,
@@ -166,6 +168,17 @@ export default function ChoosePrescriptionsScreen() {
             resolvedAuthorizationRequest.authorizationRequest,
         },
       );
+      for (const credential of chosenPrescriptions) {
+        await storeVerifierNameVcIsSharedWith(
+          agentContext.agent,
+          credential as W3cCredentialRecord,
+          resolvedAuthorizationRequest.authorizationRequest
+            .registrationMetadataPayload.client_name,
+        );
+      }
+      await queryClient.invalidateQueries({
+        queryKey: ["verifierNames"],
+      });
       setSharingState(false);
       clearResolvedAuthorizationRequest();
       router.push("/Shared");
