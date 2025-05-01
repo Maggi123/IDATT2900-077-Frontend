@@ -45,20 +45,39 @@ export default function ViewPrescriptions() {
       agentContext.agent.genericRecords.getAll().then((records) => {
         const issuerNames: Record<string, unknown> = {};
         for (const record of records) {
-          issuerNames[record.id] = record.content.name;
+          if (record.content.name) issuerNames[record.id] = record.content.name;
         }
         return issuerNames;
       }),
   });
 
-  if (prescriptions.isPending || issuerNames.isPending)
+  const verifierNames = useQuery({
+    queryKey: ["verifierNames"],
+    queryFn: () =>
+      agentContext.agent.genericRecords.getAll().then((records) => {
+        const verifierNames: Record<string, string[]> = {};
+        for (const record of records) {
+          if (record.content.names)
+            verifierNames[record.id] = record.content.names as string[];
+        }
+        return verifierNames;
+      }),
+  });
+
+  if (
+    prescriptions.isPending ||
+    issuerNames.isPending ||
+    verifierNames.isPending
+  )
     return <LoadingComponent />;
 
   if (
     !prescriptions.isSuccess ||
     !issuerNames.isSuccess ||
+    !verifierNames.isSuccess ||
     prescriptions.isError ||
-    issuerNames.isError
+    issuerNames.isError ||
+    verifierNames.isError
   )
     return (
       <View style={defaultStyles.container}>
@@ -159,6 +178,7 @@ export default function ViewPrescriptions() {
         issuerNames={issuerNames.data}
         selectedPrescriptions={selectedPrescriptions}
         onToggleSelection={toggleSelection}
+        verifierNames={verifierNames.data}
       />
 
       <View style={styles.buttonContainer}>
