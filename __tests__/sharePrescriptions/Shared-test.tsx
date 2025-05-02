@@ -1,6 +1,7 @@
 import { render, fireEvent, screen } from "@testing-library/react-native";
-import Shared from "@/app/(tabs)/(sharePrescriptions)/Shared";
 import { useRouter } from "expo-router";
+
+import Shared from "@/app/(tabs)/(sharePrescriptions)/Shared";
 
 jest.mock("expo-router", () => ({
   useRouter: jest.fn(),
@@ -18,7 +19,9 @@ describe("Shared", () => {
     render(<Shared />);
 
     expect(screen.getByText("Document(s) shared")).toBeTruthy();
-    expect(screen.getByText("You successfully shared the document(s)")).toBeTruthy();
+    expect(
+      screen.getByText("You successfully shared the document(s)"),
+    ).toBeTruthy();
   });
 
   it("should navigate to the sharePrescriptions screen when 'Ok' is pressed", () => {

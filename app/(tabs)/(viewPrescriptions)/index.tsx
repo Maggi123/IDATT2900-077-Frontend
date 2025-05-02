@@ -45,20 +45,42 @@ export default function ViewPrescriptions() {
       agentContext.agent.genericRecords.getAll().then((records) => {
         const issuerNames: Record<string, unknown> = {};
         for (const record of records) {
-          issuerNames[record.id] = record.content.name;
+          // General records containing the name field are issuer name records.
+          if (record.content.name) issuerNames[record.id] = record.content.name;
         }
         return issuerNames;
       }),
   });
 
-  if (prescriptions.isPending || issuerNames.isPending)
+  const verifierNames = useQuery({
+    queryKey: ["verifierNames"],
+    queryFn: () =>
+      agentContext.agent.genericRecords.getAll().then((records) => {
+        const verifierNames: Record<string, string[]> = {};
+        for (const record of records) {
+          // General records containing the names field are records containing
+          // a list of verifier names a credential has been shared with.
+          if (record.content.names)
+            verifierNames[record.id] = record.content.names as string[];
+        }
+        return verifierNames;
+      }),
+  });
+
+  if (
+    prescriptions.isPending ||
+    issuerNames.isPending ||
+    verifierNames.isPending
+  )
     return <LoadingComponent />;
 
   if (
     !prescriptions.isSuccess ||
     !issuerNames.isSuccess ||
+    !verifierNames.isSuccess ||
     prescriptions.isError ||
-    issuerNames.isError
+    issuerNames.isError ||
+    verifierNames.isError
   )
     return (
       <View style={defaultStyles.container}>
@@ -105,6 +127,7 @@ export default function ViewPrescriptions() {
           <p><strong>Authored On:</strong> ${new Date(item.authoredOn).toLocaleDateString()}</p>
           <p><strong>Expires:</strong> ${new Date(item.expires).toLocaleDateString()}</p>
           <p><strong>Added:</strong> ${new Date(item.added).toLocaleDateString()}</p>
+          <p><strong>Shared with:</strong><br> ${item.sharedWith.length > 0 ? item.sharedWith.join("<br>") : "N/A"}</p>
         </div>
       `,
       )
@@ -133,6 +156,7 @@ export default function ViewPrescriptions() {
             authoredOn: item.claims?.authoredOn ?? "N/A",
             expires: credential.credential.expirationDate ?? "N/A",
             added: credential.createdAt,
+            sharedWith: verifierNames.data[credential.id] ?? [],
           }));
       });
 
@@ -159,6 +183,7 @@ export default function ViewPrescriptions() {
         issuerNames={issuerNames.data}
         selectedPrescriptions={selectedPrescriptions}
         onToggleSelection={toggleSelection}
+        verifierNames={verifierNames.data}
       />
 
       <View style={styles.buttonContainer}>
